@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Stitch Ace Poker",
+    "slug": "stitch-ace-poker",
+    "version": "1.2.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": false,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stitchace.poker"
+    },
+    "android": {
+      "package": "com.stitchace.poker",
+      "adaptiveIcon": {
+        "backgroundColor": "#0D0D0D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "fd757005-b117-4939-aeeb-95cc739698ed"
+      }
+    },
+    "owner": "onecode311"
+  }
+}

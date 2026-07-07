@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Stitch Ace Poker",
-    "slug": "stitch-ace-poker",
-    "version": "1.2.0",
+    "name": "Mocha River",
+    "slug": "mocha-river",
+    "version": "3.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",

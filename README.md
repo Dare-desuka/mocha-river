@@ -1,4 +1,4 @@
-# Stitch Ace Poker
+# Mocha River
 
 Offline Texas Hold'em Poker — 1 pemain vs 3 bot. React Native + Expo.
 

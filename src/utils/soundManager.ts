@@ -15,13 +15,28 @@ async function load() {
     try {
       const { sound } = await Audio.Sound.createAsync(source, { shouldPlay: false });
       loaded[key] = sound;
-    } catch {}
+    } catch (e) {
+      console.warn('Sound load failed:', key, e);
+    }
   }
 }
 
-export function initSound() { load(); }
+export async function initSound() {
+  try {
+    await Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+    await load();
+  } catch (e) {
+    console.warn('Sound init failed:', e);
+  }
+}
 
 export async function playSound(name: string) {
   if (!useSettingsStore.getState().settings.soundEnabled) return;
-  await loaded[name]?.replayAsync();
+  const s = loaded[name];
+  if (!s) { console.warn('Sound not loaded:', name); return; }
+  try { await s.replayAsync(); } catch (e) { console.warn('Sound play failed:', e); }
 }

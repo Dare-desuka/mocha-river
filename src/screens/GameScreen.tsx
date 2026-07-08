@@ -353,12 +353,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: SPACING.sm + 10,
-    paddingTop: SPACING.xl + 10,
   },
   tableOval: {
-    width: '100%',
-    maxWidth: 340,
+    width: '88%',
+    maxWidth: 360,
     aspectRatio: 4 / 5,
     borderRadius: 100,
     justifyContent: 'center',
@@ -370,7 +368,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 24,
     elevation: 10,
-    borderWidth: 14,
+    borderWidth: 10,
     borderColor: '#171827',
   },
   tableGradientOuter: {
@@ -402,7 +400,7 @@ const styles = StyleSheet.create({
   },
   botTop: {
     position: 'absolute',
-    top: -54,
+    top: -48,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -410,7 +408,7 @@ const styles = StyleSheet.create({
   },
   botLeft: {
     position: 'absolute',
-    left: -54,
+    left: -50,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -418,7 +416,7 @@ const styles = StyleSheet.create({
   },
   botRight: {
     position: 'absolute',
-    right: -54,
+    right: -50,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -460,7 +458,7 @@ const styles = StyleSheet.create({
   },
   playerCards: {
     position: 'absolute',
-    bottom: -20,
+    bottom: -16,
     flexDirection: 'row',
     gap: 0,
     zIndex: 10,
@@ -472,7 +470,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '6deg' }],
   },
   playerBottom: {
-    marginTop: SPACING.xl + 16,
+    marginTop: SPACING.lg,
     alignItems: 'center',
   },
   actionBar: {

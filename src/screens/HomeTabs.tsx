@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, StyleSheet, Dimensions, StatusBar } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import HomeScreen from './HomeScreen';
@@ -9,7 +8,6 @@ import ProfileScreen from './ProfileScreen';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function HomeTabs() {
-  const navigation = useNavigation<any>();
   const [tabIndex, setTabIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
 

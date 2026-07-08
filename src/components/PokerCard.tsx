@@ -68,7 +68,9 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
           <Text style={[styles.rank, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
           <Text style={[styles.suitCorner, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
         </View>
-        <Text style={[styles.suitCenter, small && styles.suitCenterSmall, { color: suitColor }]}>{suitSymbol}</Text>
+        <View style={styles.centerArea}>
+          <Text style={[styles.suitCenter, small && styles.suitCenterSmall, { color: suitColor }]}>{suitSymbol}</Text>
+        </View>
         <View style={styles.cornerBottom}>
           <Text style={[styles.rank, styles.rankBottom, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
           <Text style={[styles.suitCorner, styles.suitBottom, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
@@ -251,21 +253,24 @@ const styles = StyleSheet.create({
   front: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   cornerTop: {
+    position: 'absolute',
+    top: 4,
+    left: 5,
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingLeft: 5,
-    paddingTop: 4,
   },
   cornerBottom: {
+    position: 'absolute',
+    right: 5,
+    bottom: 4,
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    paddingRight: 5,
-    paddingBottom: 4,
     transform: [{ rotate: '180deg' }],
+  },
+  centerArea: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rank: {
     fontSize: 16,

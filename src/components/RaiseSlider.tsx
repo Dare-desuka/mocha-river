@@ -16,16 +16,22 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
   const trackWidth = useRef(1);
   const thumbPos = useRef(0);
 
-  const potFractions = [
-    { label: '1/3', mult: 1 / 3 },
-    { label: '1/2', mult: 0.5 },
-    { label: '3/4', mult: 0.75 },
-    { label: 'Pot', mult: 1 },
-  ];
-  const potPresets = potFractions.map(f => {
-    const amt = Math.min(Math.max(Math.round(pot * f.mult), min), max);
-    return { label: f.label, amount: amt };
-  }).filter((v, i, a) => a.findIndex(x => x.amount === v.amount) === i);
+  const getPresetLabel = (amt: number) => {
+    if (amt === max) return 'ALL IN';
+    return formatChips(amt);
+  };
+  const presetCount = 4;
+  const pStep = Math.max(1, Math.round((max - min) / (presetCount - 1)));
+  const presetsList: { label: string; amount: number }[] = [];
+  for (let i = 0; i < presetCount; i++) {
+    const amt = Math.min(min + pStep * i, max);
+    if (!presetsList.find(p => p.amount === amt)) {
+      presetsList.push({ label: getPresetLabel(amt), amount: amt });
+    }
+  }
+  if (!presetsList.find(p => p.amount === max)) {
+    presetsList.push({ label: getPresetLabel(max), amount: max });
+  }
 
   const raiseFromPosition = useCallback((positionX: number) => {
     const ratio = Math.max(0, Math.min(1, positionX / (trackWidth.current || 1)));
@@ -75,9 +81,9 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
         </TouchableOpacity>
       </View>
 
-      {/* Pot fraction buttons */}
+      {/* Quick raise amounts */}
       <View style={styles.presets}>
-        {potPresets.map((p) => (
+        {presetsList.map((p) => (
           <TouchableOpacity
             key={p.label}
             style={[styles.presetBtn, selected === p.amount && styles.presetActive]}
@@ -88,14 +94,6 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
             </Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity
-          style={[styles.presetBtn, selected === max && styles.presetActive]}
-          onPress={() => setSelected(max)}
-        >
-          <Text style={[styles.presetText, selected === max && styles.presetTextActive]}>
-            ALL IN
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.buttons}>

@@ -239,13 +239,6 @@ export default function GameScreen() {
                 </View>
               </View>
             </View>
-
-            {/* Current bet */}
-            {currentBet > 0 && (
-              <View style={styles.currentBetRow}>
-                <Text style={styles.currentBetText}>Current Bet: {formatChips(currentBet)}</Text>
-              </View>
-            )}
           </View>
         </View>
 
@@ -476,14 +469,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 0,
-  },
-  currentBetRow: {
-    marginTop: SPACING.xs,
-  },
-  currentBetText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.primary,
   },
   playerBottom: {
     marginTop: SPACING.lg,

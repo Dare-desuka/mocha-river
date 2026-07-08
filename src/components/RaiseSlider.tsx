@@ -58,9 +58,8 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
     trackWidth.current = e.nativeEvent.layout.width;
   }, []);
 
-  const step = Math.max(1, Math.round((max - min) / 20) || 1);
-  const dec = () => setSelected(Math.max(min, selected - step));
-  const inc = () => setSelected(Math.min(max, selected + step));
+  const dec = () => setSelected(Math.max(min, selected - 1));
+  const inc = () => setSelected(Math.min(max, selected + 1));
 
   const fillRatio = max > min ? (selected - min) / (max - min) : 0;
 

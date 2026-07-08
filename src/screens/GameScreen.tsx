@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   },
   botTop: {
     position: 'absolute',
-    top: -40,
+    top: -28,
     left: 0,
     right: 0,
     alignItems: 'center',

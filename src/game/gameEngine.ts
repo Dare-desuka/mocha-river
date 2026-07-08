@@ -1,4 +1,4 @@
-import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, STARTING_CHIPS, HandEvaluation, PotAward, BotAction } from './types';
+import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, BLIND_LEVELS, BLIND_INTERVAL, STARTING_CHIPS, HandEvaluation, PotAward, BotAction } from './types';
 import { getDeck, shuffleDeck, dealCards } from './deck';
 import { evaluateBestHand, compareHands, getHandName } from './handEvaluator';
 import { makeBotDecision } from './botAI';
@@ -63,6 +63,7 @@ export function createInitialState(): GameState {
     lastRaiserIndex: -1,
     roundActionsSinceLastRaise: 0,
     handCount: 0,
+    blindLevel: 0,
     botActionMessage: null,
     difficulty: 'medium',
   };
@@ -116,6 +117,11 @@ export function startNewHand(state: GameState): GameState {
     createPlayer(i, p.name, p.isBot, p.chips)
   );
 
+  // Advance blind level every BLIND_INTERVAL hands
+  if (newState.handCount > 0 && newState.handCount % BLIND_INTERVAL === 0) {
+    newState.blindLevel = Math.min(newState.blindLevel + 1, BLIND_LEVELS.length - 1);
+  }
+
   newState.dealerIndex = (newState.dealerIndex + 1) % playerCount;
   newState.handCount += 1;
 
@@ -124,8 +130,9 @@ export function startNewHand(state: GameState): GameState {
   newState.smallBlindIndex = sbIdx;
   newState.bigBlindIndex = bbIdx;
 
-  const smallBlind = Math.min(BLIND_AMOUNTS.small, newState.players[sbIdx].chips);
-  const bigBlind = Math.min(BLIND_AMOUNTS.big, newState.players[bbIdx].chips);
+  const level = BLIND_LEVELS[newState.blindLevel] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
+  const smallBlind = Math.min(level.small, newState.players[sbIdx].chips);
+  const bigBlind = Math.min(level.big, newState.players[bbIdx].chips);
   newState.players[sbIdx].chips -= smallBlind;
   newState.players[sbIdx].currentBet = smallBlind;
   newState.players[sbIdx].totalBet = smallBlind;
@@ -165,7 +172,8 @@ export function startNewHand(state: GameState): GameState {
 
 function advancePhase(state: GameState): GameState {
   let newState = resetBettingRound(state);
-  newState.minRaise = BLIND_AMOUNTS.big;
+  const currentLevel = BLIND_LEVELS[newState.blindLevel] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
+  newState.minRaise = currentLevel.big;
 
   if (newState.phase === 'preflop') {
     newState.phase = 'flop';

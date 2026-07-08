@@ -6,17 +6,26 @@ import { formatChips } from '../utils/format';
 interface Props {
   min: number;
   max: number;
+  pot: number;
   onConfirm: (amount: number) => void;
   onCancel: () => void;
 }
 
-const PRESETS = [2, 3, 4, 5, 8, 10];
-
-const RaiseSlider: React.FC<Props> = ({ min, max, onConfirm, onCancel }) => {
-  const bigBlind = Math.max(min, 20);
+const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) => {
   const [selected, setSelected] = useState(min);
   const trackWidth = useRef(1);
   const thumbPos = useRef(0);
+
+  const potFractions = [
+    { label: '1/3', mult: 1 / 3 },
+    { label: '1/2', mult: 0.5 },
+    { label: '3/4', mult: 0.75 },
+    { label: 'Pot', mult: 1 },
+  ];
+  const potPresets = potFractions.map(f => {
+    const amt = Math.min(Math.max(Math.round(pot * f.mult), min), max);
+    return { label: f.label, amount: amt };
+  }).filter((v, i, a) => a.findIndex(x => x.amount === v.amount) === i);
 
   const raiseFromPosition = useCallback((positionX: number) => {
     const ratio = Math.max(0, Math.min(1, positionX / (trackWidth.current || 1)));
@@ -43,11 +52,6 @@ const RaiseSlider: React.FC<Props> = ({ min, max, onConfirm, onCancel }) => {
     trackWidth.current = e.nativeEvent.layout.width;
   }, []);
 
-  const presets = PRESETS.map(mult => {
-    const amt = Math.min(Math.max(bigBlind * mult, min), max);
-    return amt;
-  }).filter((v, i, a) => a.indexOf(v) === i);
-
   const fillRatio = max > min ? (selected - min) / (max - min) : 0;
 
   return (
@@ -71,16 +75,16 @@ const RaiseSlider: React.FC<Props> = ({ min, max, onConfirm, onCancel }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Preset buttons */}
+      {/* Pot fraction buttons */}
       <View style={styles.presets}>
-        {presets.map((amt) => (
+        {potPresets.map((p) => (
           <TouchableOpacity
-            key={amt}
-            style={[styles.presetBtn, selected === amt && styles.presetActive]}
-            onPress={() => setSelected(amt)}
+            key={p.label}
+            style={[styles.presetBtn, selected === p.amount && styles.presetActive]}
+            onPress={() => setSelected(p.amount)}
           >
-            <Text style={[styles.presetText, selected === amt && styles.presetTextActive]}>
-              {formatChips(amt)}
+            <Text style={[styles.presetText, selected === p.amount && styles.presetTextActive]}>
+              {p.label}
             </Text>
           </TouchableOpacity>
         ))}

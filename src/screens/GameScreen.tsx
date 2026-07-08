@@ -11,6 +11,7 @@ import PlayerSeat from '../components/PlayerSeat';
 import GameStatusBanner from '../components/GameStatusBanner';
 import ShowdownModal from '../components/ShowdownModal';
 import RaiseSlider from '../components/RaiseSlider';
+import HandHistoryModal from '../components/HandHistoryModal';
 
 export default function GameScreen() {
   const navigation = useNavigation<any>();
@@ -29,6 +30,7 @@ export default function GameScreen() {
     isPlayerTurn,
     minRaise,
     handCount,
+    blindLevel,
     botActionMessage,
     startHand,
     playerAction,
@@ -37,6 +39,7 @@ export default function GameScreen() {
 
   const [showRaiseSlider, setShowRaiseSlider] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const player = players[0];
   const playerBet = player?.currentBet || 0;
@@ -206,7 +209,7 @@ export default function GameScreen() {
           {/* Table center content */}
           <View style={styles.tableCenter}>
             {/* Pot */}
-            <GameStatusBanner phase={phase} pot={pot} handCount={handCount} />
+            <GameStatusBanner phase={phase} pot={pot} handCount={handCount} blindLevel={blindLevel} level={blindLevel} />
 
             {/* Community cards */}
             <View style={styles.communityArea}>
@@ -262,6 +265,9 @@ export default function GameScreen() {
           <TouchableOpacity style={styles.continueBtn} onPress={handleDeal} activeOpacity={0.8}>
             <Text style={styles.continueBtnText}>Deal</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.historyBtn} onPress={() => setShowHistory(true)} activeOpacity={0.7}>
+            <Text style={styles.historyBtnText}>History</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
             <Text style={styles.quitBtnText}>Quit</Text>
           </TouchableOpacity>
@@ -274,6 +280,7 @@ export default function GameScreen() {
           <RaiseSlider
             min={minRaise}
             max={chipsAfterCall}
+            pot={pot}
             onConfirm={handleRaiseConfirm}
             onCancel={handleRaiseCancel}
           />
@@ -291,6 +298,20 @@ export default function GameScreen() {
         communityCards={communityCards}
         onContinue={handleContinue}
         onQuit={handleQuit}
+      />
+
+      {/* Hand history modal */}
+      <HandHistoryModal
+        visible={showHistory}
+        handCount={handCount}
+        blindLevel={blindLevel}
+        communityCards={communityCards}
+        players={players}
+        winners={winners}
+        winningHand={winningHand}
+        potAwards={potAwards}
+        actionLog={[]}
+        onClose={() => setShowHistory(false)}
       />
     </View>
   );
@@ -562,6 +583,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: COLORS.surface,
+  },
+  historyBtn: {
+    paddingVertical: SPACING.sm,
+    alignItems: 'center',
+  },
+  historyBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.primary,
   },
   quitBtn: {
     paddingVertical: SPACING.sm,

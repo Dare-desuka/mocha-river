@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Phase } from '../game/types';
+import { Phase, BLIND_LEVELS } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
 
@@ -8,9 +8,11 @@ interface Props {
   phase: Phase;
   pot: number;
   handCount: number;
+  blindLevel: number;
+  level: number;
 }
 
-const GameStatusBanner: React.FC<Props> = React.memo(({ phase, pot, handCount }) => {
+const GameStatusBanner: React.FC<Props> = React.memo(({ phase, pot, handCount, level }) => {
   const phaseLabels: Record<Phase, string> = {
     idle: 'Press Deal to Start',
     preflop: 'Pre-Flop',
@@ -20,6 +22,8 @@ const GameStatusBanner: React.FC<Props> = React.memo(({ phase, pot, handCount })
     showdown: 'Showdown!',
   };
 
+  const blind = BLIND_LEVELS[level] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
+
   return (
     <View style={styles.container}>
       <View style={styles.inner}>
@@ -27,7 +31,7 @@ const GameStatusBanner: React.FC<Props> = React.memo(({ phase, pot, handCount })
           <Text style={styles.potLabel}>Total Pot</Text>
           <Text style={styles.potAmount}>{formatChips(pot)}</Text>
         </View>
-        <Text style={styles.phase}>{phaseLabels[phase]} · Hand #{handCount}</Text>
+        <Text style={styles.phase}>{phaseLabels[phase]} · Hand #{handCount} · Blinds {blind.small}/{blind.big}</Text>
       </View>
     </View>
   );

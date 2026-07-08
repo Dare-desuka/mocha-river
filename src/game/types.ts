@@ -80,6 +80,7 @@ export interface GameState {
   lastRaiserIndex: number;
   roundActionsSinceLastRaise: number;
   handCount: number;
+  blindLevel: number;
   difficulty: BotDifficulty;
 }
 
@@ -115,9 +116,17 @@ export const SUIT_COLORS: Record<Suit, string> = {
   spades: '#11111b',
 };
 
-export const BLIND_AMOUNTS = {
-  small: 10,
-  big: 20,
-};
+export const BLIND_LEVELS = [
+  { small: 10, big: 20 },
+  { small: 15, big: 30 },
+  { small: 25, big: 50 },
+  { small: 50, big: 100 },
+  { small: 100, big: 200 },
+  { small: 200, big: 400 },
+];
+
+export const BLIND_INTERVAL = 6;
+
+export const BLIND_AMOUNTS = BLIND_LEVELS[0];
 
 export const STARTING_CHIPS = 1000;

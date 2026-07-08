@@ -88,6 +88,11 @@ export default function GameScreen() {
     setTimeout(() => startHand(), 100);
   }, [nextHand, startHand]);
 
+  const handleQuit = useCallback(() => {
+    nextHand();
+    navigation.goBack();
+  }, [nextHand, navigation]);
+
   const callAction = canCheck ? 'check' : 'call';
 
   const actionBar = phase !== 'showdown' && phase !== 'idle' ? (
@@ -250,8 +255,11 @@ export default function GameScreen() {
       {/* Action bar */}
       {phase === 'showdown' ? (
         <View style={styles.actionBar}>
-          <TouchableOpacity style={styles.nextHandBtn} onPress={handleNextHand} activeOpacity={0.8}>
-            <Text style={styles.nextHandText}>Next Hand</Text>
+          <TouchableOpacity style={styles.continueBtn} onPress={handleNextHand} activeOpacity={0.8}>
+            <Text style={styles.continueBtnText}>Continue</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
+            <Text style={styles.quitBtnText}>Quit</Text>
           </TouchableOpacity>
         </View>
       ) : actionBar}
@@ -278,6 +286,7 @@ export default function GameScreen() {
         players={players}
         communityCards={communityCards}
         onNextHand={handleNextHand}
+        onQuit={handleQuit}
       />
     </View>
   );
@@ -533,7 +542,7 @@ const styles = StyleSheet.create({
   disabledText: {
     opacity: 0.35,
   },
-  nextHandBtn: {
+  continueBtn: {
     backgroundColor: COLORS.mochaPeach,
     paddingVertical: SPACING.md,
     borderRadius: BORDER_RADIUS.full,
@@ -543,11 +552,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    marginBottom: SPACING.xs,
   },
-  nextHandText: {
+  continueBtnText: {
     fontSize: 16,
     fontWeight: '700',
     color: COLORS.surface,
+  },
+  quitBtn: {
+    paddingVertical: SPACING.sm,
+    alignItems: 'center',
+  },
+  quitBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.onSurfaceVariant,
   },
   raiseOverlay: {
     position: 'absolute',

@@ -15,6 +15,7 @@ interface Props {
   players: Player[];
   communityCards: Player['holeCards'];
   onNextHand: () => void;
+  onQuit: () => void;
 }
 
 const ShowdownModal: React.FC<Props> = ({
@@ -26,11 +27,9 @@ const ShowdownModal: React.FC<Props> = ({
   players,
   communityCards,
   onNextHand,
+  onQuit,
 }) => {
-  const [countdown, setCountdown] = useState(5);
   const pulseAnim = useRef(new Animated.Value(1)).current;
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const autoAdvanceRef = useRef(false);
 
   const winnerIndexes = new Set((winners.length > 0 ? winners : winner ? [winner] : []).map(p => p.index));
   const winningsByPlayer = potAwards.reduce<Record<number, number>>((acc, award) => {
@@ -43,42 +42,17 @@ const ShowdownModal: React.FC<Props> = ({
   }, {});
   const totalWinnings = Object.values(winningsByPlayer).reduce((sum, amount) => sum + amount, 0);
 
-  const handleNextHand = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    onNextHand();
-  };
+  const handleNextHand = () => onNextHand();
+  const handleQuit = () => onQuit();
 
   useEffect(() => {
     if (visible) {
-      autoAdvanceRef.current = false;
-      setCountdown(5);
-
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, { toValue: 1.08, duration: 500, useNativeDriver: true }),
           Animated.timing(pulseAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
         ])
       ).start();
-
-      timerRef.current = setInterval(() => {
-        setCountdown(prev => {
-          if (prev <= 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            if (!autoAdvanceRef.current) {
-              autoAdvanceRef.current = true;
-              setTimeout(() => onNextHand(), 100);
-            }
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-      };
-    } else {
-      setCountdown(5);
     }
   }, [visible]);
 
@@ -151,12 +125,12 @@ const ShowdownModal: React.FC<Props> = ({
           </ScrollView>
 
           <View style={styles.footerRow}>
-            <TouchableOpacity style={styles.button} onPress={handleNextHand} activeOpacity={0.8}>
-              <Text style={styles.buttonText}>Next Hand</Text>
+            <TouchableOpacity style={styles.continueBtn} onPress={handleNextHand} activeOpacity={0.8}>
+              <Text style={styles.continueBtnText}>Continue</Text>
             </TouchableOpacity>
-            {countdown > 0 && (
-              <Text style={styles.countdownText}>Auto in {countdown}s</Text>
-            )}
+            <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
+              <Text style={styles.quitBtnText}>Quit</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -326,9 +300,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: SPACING.sm,
   },
-  button: {
+  continueBtn: {
     backgroundColor: COLORS.mochaPeach,
-    paddingHorizontal: SPACING.xl,
     paddingVertical: SPACING.sm + 4,
     borderRadius: BORDER_RADIUS.full,
     width: '100%',
@@ -339,16 +312,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
   },
-  buttonText: {
+  continueBtnText: {
     fontSize: 16,
     fontWeight: '700',
     color: COLORS.surface,
   },
-  countdownText: {
-    fontSize: 12,
+  quitBtn: {
+    paddingVertical: SPACING.sm,
+    alignItems: 'center',
+  },
+  quitBtnText: {
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.onSurfaceVariant,
-    letterSpacing: 0.5,
   },
 });
 

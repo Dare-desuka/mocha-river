@@ -217,13 +217,22 @@ export default function GameScreen() {
 
             {/* Community cards */}
             <View style={styles.communityArea}>
-              <View style={styles.communityCards}>
-                {[0, 1, 2, 3, 4].map(i => (
+              <View style={styles.communityRow}>
+                {[0, 1, 2].map(i => (
                   <View key={i} style={styles.communitySlot}>
                     {communityCards[i] ? (
                       <PokerCard card={communityCards[i]} small />
-                    ) : phase !== 'idle' && phase !== 'preflop' && i < 3 ? (
+                    ) : phase !== 'idle' && phase !== 'preflop' ? (
                       <View style={styles.emptyCard} />
+                    ) : null}
+                  </View>
+                ))}
+              </View>
+              <View style={styles.communityRow}>
+                {[3, 4].map(i => (
+                  <View key={i} style={styles.communitySlot}>
+                    {communityCards[i] ? (
+                      <PokerCard card={communityCards[i]} small />
                     ) : null}
                   </View>
                 ))}
@@ -425,12 +434,11 @@ const styles = StyleSheet.create({
   communityArea: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 80,
+    gap: 4,
   },
-  communityCards: {
+  communityRow: {
     flexDirection: 'row',
     gap: 4,
-    flexWrap: 'wrap',
     justifyContent: 'center',
   },
   communitySlot: {

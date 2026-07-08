@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { GameState, ActionType, STARTING_CHIPS, BotDifficulty } from '../game/types';
 import { createInitialState, startNewHand, handleAction, processOneBotAction } from '../game/gameEngine';
-import { saveChipBalance, loadChipBalance, saveStats, loadStats, Stats } from '../utils/storage';
+import { saveChipBalance, loadChipBalance, saveStats, loadStats, Stats, loadProfile } from '../utils/storage';
 import { vibrate } from '../utils/haptics';
 import { playSound } from '../utils/soundManager';
 
@@ -79,6 +79,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
         i === 0 ? { ...p, chips: savedChips } : p
       );
     }
+    const profile = await loadProfile();
+    if (profile.name) {
+      state.players = state.players.map((p, i) =>
+        i === 0 ? { ...p, name: profile.name } : p
+      );
+    }
     set(state);
   },
 
@@ -86,6 +92,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     cancelTimers();
     const state = get();
     const newState = startNewHand(state);
+    loadProfile().then(p => {
+      if (p.name && p.name !== state.players[0]?.name) {
+        set(s => ({
+          ...s,
+          players: s.players.map((pl, i) =>
+            i === 0 ? { ...pl, name: p.name } : pl
+          ),
+        }));
+      }
+    });
     set({ ...newState, botActionMessage: null });
     playSound('deal');
 

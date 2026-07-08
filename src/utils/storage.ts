@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export interface ProfileData {
+  name: string;
+  avatarUri: string | null;
+}
+
 export interface Stats {
   totalHands: number;
   handsWon: number;
@@ -11,6 +16,7 @@ const KEYS = {
   CHIP_BALANCE: 'poker_chip_balance',
   SETTINGS: 'poker_settings',
   STATS: 'poker_stats',
+  PROFILE: 'poker_profile',
 };
 
 export async function saveChipBalance(chips: number): Promise<void> {
@@ -61,6 +67,21 @@ export async function saveStats(stats: Stats): Promise<void> {
   try {
     await AsyncStorage.setItem(KEYS.STATS, JSON.stringify(stats));
   } catch {}
+}
+
+export async function saveProfile(data: ProfileData): Promise<void> {
+  try {
+    await AsyncStorage.setItem(KEYS.PROFILE, JSON.stringify(data));
+  } catch {}
+}
+
+export async function loadProfile(): Promise<ProfileData> {
+  try {
+    const val = await AsyncStorage.getItem(KEYS.PROFILE);
+    return val ? JSON.parse(val) : { name: 'Ace Vancura', avatarUri: null };
+  } catch {
+    return { name: 'Ace Vancura', avatarUri: null };
+  }
 }
 
 export async function loadStats(): Promise<Stats> {

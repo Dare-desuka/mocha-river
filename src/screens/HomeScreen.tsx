@@ -16,7 +16,7 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
 
       <View style={styles.brandBlock}>
-        <Text style={styles.title}>HIGH ROLLER POKER</Text>
+          <Text style={styles.title}>MOCHA RIVER</Text>
       </View>
 
       <View style={styles.bankrollPill}>

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, TextInput, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { COLORS, BORDER_RADIUS, SPACING, TYPOGRAPHY } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { formatChips } from '../utils/format';
-import { loadStats, Stats } from '../utils/storage';
+import { loadStats, loadProfile, saveProfile, Stats, ProfileData } from '../utils/storage';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
@@ -13,10 +14,35 @@ export default function ProfileScreen() {
   const handCount = useGameStore(s => s.handCount);
   const playerChips = players[0]?.chips || 0;
   const [stats, setStats] = useState<Stats>({ totalHands: 0, handsWon: 0, biggestWin: 0, biggestWinDate: null });
+  const [profile, setProfile] = useState<ProfileData>({ name: 'Ace Vancura', avatarUri: null });
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     loadStats().then(setStats);
+    loadProfile().then(setProfile);
   }, [handCount]);
+
+  const pickImage = useCallback(async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      const updated = { ...profile, avatarUri: uri };
+      setProfile(updated);
+      await saveProfile(updated);
+    }
+  }, [profile]);
+
+  const saveName = useCallback(async () => {
+    setEditing(false);
+    const updated = { ...profile, name: profile.name.trim() || 'Player' };
+    setProfile(updated);
+    await saveProfile(updated);
+  }, [profile]);
 
   return (
     <View style={styles.container}>
@@ -26,7 +52,7 @@ export default function ProfileScreen() {
         <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.goBack()}>
           <MaterialIcons name="menu" size={24} color={COLORS.mochaPeach} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>High Roller Poker</Text>
+        <Text style={styles.headerTitle}>Mocha River</Text>
         <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('Settings')}>
           <MaterialIcons name="settings" size={24} color={COLORS.mochaPeach} />
         </TouchableOpacity>
@@ -35,13 +61,36 @@ export default function ProfileScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
-          <View style={styles.avatarContainer}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>A</Text>
+          <TouchableOpacity style={styles.avatarContainer} onPress={pickImage} activeOpacity={0.7}>
+            {profile.avatarUri ? (
+              <Image source={{ uri: profile.avatarUri }} style={styles.avatarImage} />
+            ) : (
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>
+                  {profile.name ? profile.name[0].toUpperCase() : 'A'}
+                </Text>
+              </View>
+            )}
+            <View style={styles.cameraBadge}>
+              <MaterialIcons name="camera-alt" size={14} color={COLORS.surface} />
             </View>
-            <View style={styles.onlineDot} />
-          </View>
-          <Text style={styles.playerName}>Ace Vancura</Text>
+          </TouchableOpacity>
+          {editing ? (
+            <TextInput
+              style={styles.nameInput}
+              value={profile.name}
+              onChangeText={text => setProfile(p => ({ ...p, name: text }))}
+              onBlur={saveName}
+              onSubmitEditing={saveName}
+              autoFocus
+              maxLength={20}
+              selectTextOnFocus
+            />
+          ) : (
+            <TouchableOpacity onPress={() => setEditing(true)}>
+              <Text style={styles.playerName}>{profile.name}</Text>
+            </TouchableOpacity>
+          )}
           <View style={styles.badgeRow}>
             <View style={styles.vipBadge}>
               <Text style={styles.vipText}>VIP</Text>
@@ -180,21 +229,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  avatarImage: {
+    width: 128,
+    height: 128,
+    borderRadius: 64,
+    borderWidth: 3,
+    borderColor: COLORS.surfaceHighest,
+  },
   avatarText: {
     fontSize: 32,
     fontWeight: '700',
     color: COLORS.primary,
   },
-  onlineDot: {
+  cameraBadge: {
     position: 'absolute',
     bottom: 4,
     right: 4,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: COLORS.mochaPeach,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 2,
     borderColor: COLORS.surface,
+  },
+  nameInput: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.onSurface,
+    textAlign: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primary,
+    paddingVertical: 4,
+    minWidth: 150,
+    marginBottom: SPACING.xs,
   },
   playerName: {
     ...TYPOGRAPHY.headlineLgMobile,

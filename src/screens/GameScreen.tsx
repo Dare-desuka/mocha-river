@@ -46,9 +46,7 @@ export default function GameScreen() {
   const raisePreview = canRaise ? Math.min(Math.max(minRaise * 3, minRaise), chipsAfterCall) : 0;
 
   useEffect(() => {
-    if (phase === 'idle' && !winner) {
-      startHand();
-    }
+    startHand();
   }, []);
 
   const handleAction = useCallback((action: ActionType) => {
@@ -73,13 +71,17 @@ export default function GameScreen() {
         'Your current hand will be lost.',
         [
           { text: 'Stay', style: 'cancel' },
-          { text: 'Leave', style: 'destructive', onPress: () => navigation.goBack() },
+          { text: 'Leave', style: 'destructive', onPress: () => {
+            nextHand();
+            navigation.goBack();
+          }},
         ]
       );
     } else {
+      nextHand();
       navigation.goBack();
     }
-  }, [phase, navigation]);
+  }, [phase, navigation, nextHand]);
 
   const handleNextHand = useCallback(() => {
     nextHand();
@@ -142,7 +144,7 @@ export default function GameScreen() {
         <TouchableOpacity style={styles.headerIconBtn} onPress={handleBack}>
           <MaterialIcons name="menu" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>High Roller Poker</Text>
+          <Text style={styles.headerTitle}>Mocha River</Text>
         <TouchableOpacity style={styles.headerIconBtn} onPress={() => navigation.navigate('Settings')}>
           <MaterialIcons name="settings" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>
@@ -314,6 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: SPACING.sm + 10,
+    paddingTop: SPACING.xl + 10,
   },
   tableOval: {
     width: '100%',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { Player } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
@@ -11,6 +11,7 @@ interface Props {
   position: 'bottom' | 'left' | 'top' | 'right';
   showCards?: boolean;
   botAction?: string | null;
+  avatarUri?: string | null;
 }
 
 const PlayerSeat: React.FC<Props> = React.memo(({
@@ -19,19 +20,24 @@ const PlayerSeat: React.FC<Props> = React.memo(({
   position,
   showCards,
   botAction,
+  avatarUri,
 }) => {
   const isActive = !player.folded && !player.isAllIn;
-  const initials = player.isBot ? player.name.replace('Bot ', '').slice(0, 1) : 'P';
+  const initials = player.isBot ? player.name.replace('Bot ', '').slice(0, 1) : (player.name[0] || 'P');
   const avatarColors = ['#2a2024', '#182034', '#2a251d', '#241f30'];
   const avatarColor = avatarColors[player.index % avatarColors.length];
 
   return (
     <View style={[styles.container, position === 'bottom' && styles.containerBottom, isCurrentPlayer && isActive && styles.active]}>
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: avatarColor }, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
-        <View style={styles.avatarInner}>
-          <Text style={styles.avatarText}>{initials}</Text>
-        </View>
+      <View style={[styles.avatar, { backgroundColor: avatarUri ? 'transparent' : avatarColor }, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
+        {avatarUri ? (
+          <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
+        ) : (
+          <View style={styles.avatarInner}>
+            <Text style={styles.avatarText}>{initials}</Text>
+          </View>
+        )}
         <View style={styles.avatarHighlight} />
       </View>
 
@@ -140,6 +146,11 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(250,179,135,0.55)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  avatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   avatarHighlight: {
     position: 'absolute',

@@ -7,6 +7,7 @@ import { useGameStore } from '../store/gameStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { ActionType } from '../game/types';
 import { formatChips } from '../utils/format';
+import { loadProfile } from '../utils/storage';
 import PokerCard from '../components/PokerCard';
 import PlayerSeat from '../components/PlayerSeat';
 import GameStatusBanner from '../components/GameStatusBanner';
@@ -45,6 +46,7 @@ export default function GameScreen() {
   const [gameOver, setGameOver] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   const player = players[0];
   const playerBet = player?.currentBet || 0;
@@ -55,6 +57,7 @@ export default function GameScreen() {
 
   useEffect(() => {
     startHand();
+    loadProfile().then(p => setAvatarUri(p.avatarUri));
   }, []);
 
   const handleAction = useCallback((action: ActionType) => {
@@ -263,6 +266,7 @@ export default function GameScreen() {
             isCurrentPlayer={currentPlayerIndex === 0}
             position="bottom"
             showCards={true}
+            avatarUri={avatarUri}
           />
         </View>
       </View>

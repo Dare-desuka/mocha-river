@@ -377,8 +377,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tableOval: {
-    width: '88%',
-    maxWidth: 360,
+    width: '90%',
+    maxWidth: 370,
     aspectRatio: 4 / 5,
     borderRadius: 100,
     justifyContent: 'center',
@@ -390,12 +390,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 24,
     elevation: 10,
-    borderWidth: 10,
+    borderWidth: 16,
     borderColor: '#171827',
   },
   tableGradientOuter: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-    borderRadius: 86,
+    borderRadius: 80,
   },
   tableGradientMid: {
     position: 'absolute',
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   },
   botTop: {
     position: 'absolute',
-    top: -36,
+    top: -40,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   },
   botLeft: {
     position: 'absolute',
-    left: -44,
+    left: -48,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   botRight: {
     position: 'absolute',
-    right: -44,
+    right: -48,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
   },
   playerCards: {
     position: 'absolute',
-    bottom: -16,
+    bottom: -20,
     flexDirection: 'row',
     gap: 0,
     zIndex: 10,

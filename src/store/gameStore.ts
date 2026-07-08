@@ -29,7 +29,7 @@ const processNextBot = () => {
   if (state.phase === 'showdown' || state.phase === 'idle' || state.isPlayerTurn) return;
 
   const result = processOneBotAction(state);
-  setState({ ...result, botActionMessage: result.botActionMessage });
+  setState(result);
 
   if (
     !result.isPlayerTurn &&
@@ -103,7 +103,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         }));
       }
     });
-    set({ ...newState, botActionMessage: null });
+    set({ ...newState, botActions: {} });
     playSound('deal');
 
     if (newState.isPlayerTurn) {
@@ -121,7 +121,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!state.isPlayerTurn) return;
 
     const newState = handleAction(state, action, amount);
-    set({ ...newState, botActionMessage: null });
+    set({ ...newState, botActions: { ...state.botActions } });
 
     vibrate(30);
     playSound('chip');

@@ -1,4 +1,4 @@
-import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, BLIND_LEVELS, BLIND_INTERVAL, STARTING_CHIPS, HandEvaluation, PotAward, BotAction } from './types';
+import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, BLIND_LEVELS, BLIND_INTERVAL, STARTING_CHIPS, HandEvaluation, PotAward } from './types';
 import { getDeck, shuffleDeck, dealCards } from './deck';
 import { evaluateBestHand, compareHands, getHandName } from './handEvaluator';
 import { makeBotDecision } from './botAI';
@@ -64,7 +64,7 @@ export function createInitialState(): GameState {
     roundActionsSinceLastRaise: 0,
     handCount: 0,
     blindLevel: 0,
-    botActionMessage: null,
+    botActions: {},
     difficulty: 'medium',
   };
 }
@@ -429,7 +429,7 @@ export function processOneBotAction(state: GameState): GameState {
   if (state.phase === 'showdown' || state.phase === 'idle' || state.isPlayerTurn) return state;
 
   const player = state.players[state.currentPlayerIndex];
-  if (!player.isBot || player.folded || player.isAllIn) return { ...state, botActionMessage: null };
+  if (!player.isBot || player.folded || player.isAllIn) return state;
 
   const decision = makeBotDecision(
     player,
@@ -448,12 +448,12 @@ export function processOneBotAction(state: GameState): GameState {
     const fallbackState = handleAction(state, fallback);
     return {
       ...fallbackState,
-      botActionMessage: { playerIndex: player.index, text: formatBotActionText(fallbackState, player, fallback, state.currentBet - player.currentBet) },
+      botActions: { ...state.botActions, [player.index]: formatBotActionText(fallbackState, player, fallback, state.currentBet - player.currentBet) },
     };
   }
 
   return {
     ...nextState,
-    botActionMessage: { playerIndex: player.index, text: formatBotActionText(nextState, player, decision.type, decision.amount) },
+    botActions: { ...state.botActions, [player.index]: formatBotActionText(nextState, player, decision.type, decision.amount) },
   };
 }

@@ -32,7 +32,7 @@ export default function GameScreen() {
     minRaise,
     handCount,
     blindLevel,
-    botActionMessage,
+    botActions,
     startHand,
     playerAction,
     nextHand,
@@ -183,7 +183,7 @@ export default function GameScreen() {
               isCurrentPlayer={currentPlayerIndex === 2}
               position="top"
               showCards={phase === 'showdown'}
-              botAction={botActionMessage?.playerIndex === 2 ? botActionMessage.text : null}
+              botAction={botActions[2] ?? null}
             />
           </View>
 
@@ -194,7 +194,7 @@ export default function GameScreen() {
               isCurrentPlayer={currentPlayerIndex === 1}
               position="left"
               showCards={phase === 'showdown'}
-              botAction={botActionMessage?.playerIndex === 1 ? botActionMessage.text : null}
+              botAction={botActions[1] ?? null}
             />
           </View>
 
@@ -205,7 +205,7 @@ export default function GameScreen() {
               isCurrentPlayer={currentPlayerIndex === 3}
               position="right"
               showCards={phase === 'showdown'}
-              botAction={botActionMessage?.playerIndex === 3 ? botActionMessage.text : null}
+              botAction={botActions[3] ?? null}
             />
           </View>
 

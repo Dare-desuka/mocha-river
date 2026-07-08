@@ -60,7 +60,7 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
 
   return (
     <View style={[styles.card, small && styles.cardSmall]}>
-      <Animated.View style={[styles.backOverlay, { opacity: backOpacity }, small && styles.cardSmall]}>
+      <Animated.View style={[styles.backOverlay, { opacity: backOpacity }]}>
         <BackDesign small={small} />
       </Animated.View>
       <Animated.View style={[styles.front, { opacity: frontOpacity }]}>

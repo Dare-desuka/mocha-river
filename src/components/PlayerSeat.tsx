@@ -86,14 +86,14 @@ const PlayerSeat: React.FC<Props> = React.memo(({
       {player.isAllIn && <Text style={styles.statusText}>ALL IN</Text>}
       {player.folded && <Text style={styles.foldedText}>Folded</Text>}
 
-      {/* Hole cards (skip bottom/player — already rendered in game table) */}
-      {position !== 'bottom' && (showCards || !player.isBot) && player.holeCards.length === 2 && (
+      {/* Hole cards */}
+      {(showCards || !player.isBot) && player.holeCards.length === 2 && (
         <View style={styles.cards}>
           <PokerCard card={player.holeCards[0]} small />
           <PokerCard card={player.holeCards[1]} small />
         </View>
       )}
-      {position !== 'bottom' && !showCards && player.isBot && isActive && player.holeCards.length === 2 && (
+      {!showCards && player.isBot && isActive && player.holeCards.length === 2 && (
         <View style={styles.cards}>
           <PokerCard card={player.holeCards[0]} hidden small />
           <PokerCard card={player.holeCards[1]} hidden small />

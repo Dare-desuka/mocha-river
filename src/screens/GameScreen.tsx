@@ -211,30 +211,32 @@ export default function GameScreen() {
 
           {/* Table center content */}
           <View style={styles.tableCenter}>
-            {/* Pot */}
-            <GameStatusBanner phase={phase} pot={pot} handCount={handCount} blindLevel={blindLevel} level={blindLevel} />
-
-            {/* Community cards */}
-            <View style={styles.communityArea}>
-              <View style={styles.communityRow}>
-                {[0, 1, 2].map(i => (
-                  <View key={i} style={styles.communitySlot}>
-                    {communityCards[i] ? (
-                      <PokerCard card={communityCards[i]} small />
-                    ) : phase !== 'idle' && phase !== 'preflop' ? (
-                      <View style={styles.emptyCard} />
-                    ) : null}
-                  </View>
-                ))}
+            {/* Community cards with centered text behind */}
+            <View style={styles.communityWrapper}>
+              <View style={styles.statusBannerWrap}>
+                <GameStatusBanner phase={phase} pot={pot} handCount={handCount} blindLevel={blindLevel} level={blindLevel} />
               </View>
-              <View style={styles.communityRow}>
-                {[3, 4].map(i => (
-                  <View key={i} style={styles.communitySlot}>
-                    {communityCards[i] ? (
-                      <PokerCard card={communityCards[i]} small />
-                    ) : null}
-                  </View>
-                ))}
+              <View style={styles.communityArea}>
+                <View style={styles.communityRow}>
+                  {[0, 1, 2].map(i => (
+                    <View key={i} style={styles.communitySlot}>
+                      {communityCards[i] ? (
+                        <PokerCard card={communityCards[i]} small />
+                      ) : phase !== 'idle' && phase !== 'preflop' ? (
+                        <View style={styles.emptyCard} />
+                      ) : null}
+                    </View>
+                  ))}
+                </View>
+                <View style={styles.communityRow}>
+                  {[3, 4].map(i => (
+                    <View key={i} style={styles.communitySlot}>
+                      {communityCards[i] ? (
+                        <PokerCard card={communityCards[i]} small />
+                      ) : null}
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
 
@@ -245,18 +247,6 @@ export default function GameScreen() {
               </View>
             )}
           </View>
-
-          {/* Player hole cards at bottom of table */}
-          {phase !== 'idle' && player && player.holeCards.length === 2 && (
-            <View style={styles.playerCards}>
-              <View style={styles.playerCardLeft}>
-                <PokerCard card={player.holeCards[0]} />
-              </View>
-              <View style={styles.playerCardRight}>
-                <PokerCard card={player.holeCards[1]} />
-              </View>
-            </View>
-          )}
         </View>
 
         {/* Player seat below table */}
@@ -448,10 +438,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 5,
   },
+  communityWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    minHeight: 140,
+  },
   communityArea: {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
+    zIndex: 1,
   },
   communityRow: {
     flexDirection: 'row',
@@ -473,6 +470,13 @@ const styles = StyleSheet.create({
     borderColor: COLORS.outlineVariant,
     borderStyle: 'dashed',
   },
+  statusBannerWrap: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 0,
+  },
   currentBetRow: {
     marginTop: SPACING.xs,
   },
@@ -480,19 +484,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: COLORS.primary,
-  },
-  playerCards: {
-    position: 'absolute',
-    bottom: -20,
-    flexDirection: 'row',
-    gap: 0,
-    zIndex: 10,
-  },
-  playerCardLeft: {
-    transform: [{ rotate: '-6deg' }, { translateY: 8 }],
-  },
-  playerCardRight: {
-    transform: [{ rotate: '6deg' }],
   },
   playerBottom: {
     marginTop: SPACING.lg,

@@ -14,6 +14,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     vibrationEnabled: true,
     botDifficulty: 'medium',
     tableTheme: 'classic',
+    cardBack: 'classic',
+    soundPack: 'classic',
   },
 
   load: async () => {

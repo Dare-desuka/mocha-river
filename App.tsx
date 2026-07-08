@@ -11,7 +11,7 @@ import TutorialScreen from './src/screens/TutorialScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import { useSettingsStore } from './src/store/settingsStore';
 import { useGameStore } from './src/store/gameStore';
-import { initSound } from './src/utils/soundManager';
+import { initSound, ensureSoundPack } from './src/utils/soundManager';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +42,7 @@ export default function App() {
       const { botDifficulty } = useSettingsStore.getState().settings;
       useGameStore.getState().setDifficulty(botDifficulty);
     });
-    initSound();
+    initSound().then(() => ensureSoundPack());
   }, []);
 
   if (!fontsLoaded) return null;

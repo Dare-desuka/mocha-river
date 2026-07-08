@@ -39,6 +39,8 @@ export interface Settings {
   vibrationEnabled: boolean;
   botDifficulty: 'easy' | 'medium' | 'hard';
   tableTheme: string;
+  cardBack: 'classic' | 'diamond' | 'royal';
+  soundPack: 'classic' | 'arcade' | 'muted';
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -46,6 +48,8 @@ const DEFAULT_SETTINGS: Settings = {
   vibrationEnabled: true,
   botDifficulty: 'medium',
   tableTheme: 'classic',
+  cardBack: 'classic',
+  soundPack: 'classic',
 };
 
 export async function saveSettings(settings: Settings): Promise<void> {

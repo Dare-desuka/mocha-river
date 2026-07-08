@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { Card as CardType, SUIT_SYMBOLS, SUIT_COLORS, RANK_NAMES } from '../game/types';
-import { BORDER_RADIUS } from '../constants/theme';
+import { useSettingsStore } from '../store/settingsStore';
 
 interface Props {
   card: CardType;
@@ -10,7 +10,15 @@ interface Props {
   flipped?: boolean;
 }
 
+const DESIGNS: Record<string, React.FC<{ small?: boolean }>> = {
+  classic: ClassicBack,
+  diamond: DiamondBack,
+  royal: RoyalBack,
+};
+
 const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: showAnimation }) => {
+  const cardBack = useSettingsStore(s => s.settings.cardBack);
+  const BackDesign = DESIGNS[cardBack] || ClassicBack;
   const flipAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -41,12 +49,7 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
   if (hidden) {
     return (
       <View style={[styles.card, styles.cardBack, small && styles.cardSmall]}>
-        <View style={styles.backPattern}>
-          <View style={styles.backFrame} />
-          <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }] }]} />
-          <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }] }]} />
-          <Text style={styles.backText}>♠♥♣♦</Text>
-        </View>
+        <BackDesign small={small} />
       </View>
     );
   }
@@ -58,12 +61,7 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
   return (
     <View style={[styles.card, small && styles.cardSmall]}>
       <Animated.View style={[styles.backOverlay, { opacity: backOpacity }, small && styles.cardSmall]}>
-        <View style={[styles.backPatternFill]}>
-          <View style={styles.backFrame} />
-          <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }] }]} />
-          <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }] }]} />
-          <Text style={styles.backText}>♠♥♣♦</Text>
-        </View>
+        <BackDesign small={small} />
       </Animated.View>
       <Animated.View style={[styles.front, { opacity: frontOpacity }]}>
         <View style={styles.cornerTop}>
@@ -79,6 +77,43 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
     </View>
   );
 });
+
+function ClassicBack({ small }: { small?: boolean }) {
+  return (
+    <View style={styles.backPattern}>
+      <View style={styles.backFrame} />
+      <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }] }]} />
+      <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }] }]} />
+      <Text style={styles.backText}>♠♥♣♦</Text>
+    </View>
+  );
+}
+
+function DiamondBack({ small }: { small?: boolean }) {
+  return (
+    <View style={styles.backPattern}>
+      <View style={[styles.diamondOuter, small && styles.diamondOuterSmall]}>
+        <View style={[styles.diamondInner, small && styles.diamondInnerSmall]}>
+          <Text style={[styles.diamondCenterText, small && styles.diamondCenterTextSmall]}>♦</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function RoyalBack({ small }: { small?: boolean }) {
+  return (
+    <View style={styles.backPattern}>
+      <View style={[styles.royalOuter, small && styles.royalOuterSmall]} />
+      <View style={styles.royalInner} />
+      <Text style={[styles.royalCorner, styles.royalTopLeft]}>♠</Text>
+      <Text style={[styles.royalCorner, styles.royalTopRight]}>♥</Text>
+      <Text style={[styles.royalCorner, styles.royalBottomLeft]}>♣</Text>
+      <Text style={[styles.royalCorner, styles.royalBottomRight]}>♦</Text>
+      <Text style={[styles.royalCenter, small && styles.royalCenterSmall]}>♔</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -107,9 +142,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(181,207,255,0.45)',
   },
+  backOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: 2,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
   backPattern: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     overflow: 'hidden',
     backgroundColor: '#242638',
     justifyContent: 'center',
@@ -138,19 +179,74 @@ const styles = StyleSheet.create({
     color: 'rgba(181,207,255,0.2)',
     letterSpacing: 4,
   },
-  backOverlay: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    zIndex: 2,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  backPatternFill: {
-    flex: 1,
-    backgroundColor: '#242638',
+  diamondOuter: {
+    width: '60%',
+    height: '60%',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: 'rgba(181,207,255,0.5)',
+    transform: [{ rotate: '45deg' }],
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
+  },
+  diamondOuterSmall: {
+    borderWidth: 1.5,
+  },
+  diamondInner: {
+    width: '60%',
+    height: '60%',
+    backgroundColor: 'rgba(181,207,255,0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ rotate: '45deg' }],
+  },
+  diamondInnerSmall: {},
+  diamondCenterText: {
+    fontSize: 14,
+    color: 'rgba(181,207,255,0.35)',
+    transform: [{ rotate: '-45deg' }],
+  },
+  diamondCenterTextSmall: {
+    fontSize: 10,
+  },
+  royalOuter: {
+    position: 'absolute',
+    top: '12%',
+    left: '12%',
+    width: '76%',
+    height: '76%',
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: 'rgba(181,207,255,0.35)',
+  },
+  royalOuterSmall: {
+    borderWidth: 1,
+  },
+  royalInner: {
+    position: 'absolute',
+    top: '22%',
+    left: '22%',
+    width: '56%',
+    height: '56%',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(181,207,255,0.25)',
+  },
+  royalCorner: {
+    position: 'absolute',
+    fontSize: 9,
+    color: 'rgba(181,207,255,0.25)',
+  },
+  royalTopLeft: { top: 5, left: 5 },
+  royalTopRight: { top: 5, right: 5 },
+  royalBottomLeft: { bottom: 5, left: 5 },
+  royalBottomRight: { bottom: 5, right: 5 },
+  royalCenter: {
+    fontSize: 16,
+    color: 'rgba(181,207,255,0.3)',
+  },
+  royalCenterSmall: {
+    fontSize: 12,
   },
   front: {
     ...StyleSheet.absoluteFillObject,

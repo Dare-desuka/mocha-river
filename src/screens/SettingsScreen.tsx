@@ -138,6 +138,56 @@ export default function SettingsScreen() {
           ))}
         </View>
 
+        {/* Card Back */}
+        <Text style={styles.sectionTitle}>CARD BACK</Text>
+        <View style={styles.sectionCard}>
+          {[
+            { key: 'classic', label: 'Classic', desc: 'Cross-hatch pattern' },
+            { key: 'diamond', label: 'Diamond', desc: 'Rotating diamond' },
+            { key: 'royal', label: 'Royal', desc: 'Concentric frames' },
+          ].map(opt => (
+            <TouchableOpacity
+              key={opt.key}
+              style={[styles.selectorRow, settings.cardBack === opt.key && styles.selectorRowActive]}
+              onPress={() => update({ cardBack: opt.key as any })}
+              activeOpacity={0.7}
+            >
+              <View style={styles.selectorInfo}>
+                <Text style={[styles.selectorLabel, settings.cardBack === opt.key && styles.selectorLabelActive]}>{opt.label}</Text>
+                <Text style={styles.selectorDesc}>{opt.desc}</Text>
+              </View>
+              {settings.cardBack === opt.key && (
+                <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Sound Pack */}
+        <Text style={styles.sectionTitle}>SOUND PACK</Text>
+        <View style={styles.sectionCard}>
+          {[
+            { key: 'classic', label: 'Classic', desc: 'Original sound effects' },
+            { key: 'arcade', label: 'Arcade', desc: 'Higher-pitched tones' },
+            { key: 'muted', label: 'Muted', desc: 'Softer, lower tones' },
+          ].map(opt => (
+            <TouchableOpacity
+              key={opt.key}
+              style={[styles.selectorRow, settings.soundPack === opt.key && styles.selectorRowActive]}
+              onPress={() => update({ soundPack: opt.key as any })}
+              activeOpacity={0.7}
+            >
+              <View style={styles.selectorInfo}>
+                <Text style={[styles.selectorLabel, settings.soundPack === opt.key && styles.selectorLabelActive]}>{opt.label}</Text>
+                <Text style={styles.selectorDesc}>{opt.desc}</Text>
+              </View>
+              {settings.soundPack === opt.key && (
+                <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
         {/* Danger Zone */}
         <Text style={[styles.sectionTitle, { color: COLORS.mochaRed }]}>DANGER ZONE</Text>
         <View style={[styles.sectionCard, { borderColor: 'rgba(243, 139, 168, 0.2)' }]}>
@@ -302,6 +352,34 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   difficultyDesc: {
+    fontSize: 11,
+    color: COLORS.onSurfaceVariant,
+    marginTop: 2,
+  },
+  selectorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: SPACING.sm + 4,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.xs,
+  },
+  selectorRowActive: {
+    backgroundColor: 'rgba(181, 207, 255, 0.08)',
+  },
+  selectorInfo: {
+    flex: 1,
+  },
+  selectorLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.onSurface,
+  },
+  selectorLabelActive: {
+    color: COLORS.primary,
+  },
+  selectorDesc: {
     fontSize: 11,
     color: COLORS.onSurfaceVariant,
     marginTop: 2,

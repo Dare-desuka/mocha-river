@@ -103,11 +103,16 @@ function ClassicBack({ small }: { small?: boolean }) {
 function DiamondBack({ small }: { small?: boolean }) {
   return (
     <View style={styles.backPattern}>
+      <View style={styles.diamondFrame} />
       <View style={[styles.diamondOuter, small && styles.diamondOuterSmall]}>
         <View style={[styles.diamondInner, small && styles.diamondInnerSmall]}>
           <Text style={[styles.diamondCenterText, small && styles.diamondCenterTextSmall]}>♦</Text>
         </View>
       </View>
+      <Text style={[styles.backCorner, styles.backCornerTL, { color: 'rgba(245,194,231,0.3)' }]}>♦</Text>
+      <Text style={[styles.backCorner, styles.backCornerTR, { color: 'rgba(245,194,231,0.3)' }]}>♦</Text>
+      <Text style={[styles.backCorner, styles.backCornerBL, { color: 'rgba(245,194,231,0.3)' }]}>♦</Text>
+      <Text style={[styles.backCorner, styles.backCornerBR, { color: 'rgba(245,194,231,0.3)' }]}>♦</Text>
     </View>
   );
 }
@@ -117,11 +122,14 @@ function RoyalBack({ small }: { small?: boolean }) {
     <View style={styles.backPattern}>
       <View style={[styles.royalOuter, small && styles.royalOuterSmall]} />
       <View style={styles.royalInner} />
+      <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }], backgroundColor: 'rgba(212,176,99,0.08)' }]} />
+      <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }], backgroundColor: 'rgba(212,176,99,0.08)' }]} />
       <Text style={[styles.royalCorner, styles.royalTopLeft]}>♠</Text>
       <Text style={[styles.royalCorner, styles.royalTopRight]}>♥</Text>
       <Text style={[styles.royalCorner, styles.royalBottomLeft]}>♣</Text>
       <Text style={[styles.royalCorner, styles.royalBottomRight]}>♦</Text>
       <Text style={[styles.royalCenter, small && styles.royalCenterSmall]}>♔</Text>
+      <Text style={[styles.royalBottomText, small && styles.royalBottomTextSmall]}>♔</Text>
     </View>
   );
 }
@@ -224,12 +232,22 @@ const styles = StyleSheet.create({
     fontSize: 6,
     letterSpacing: 2,
   },
+  diamondFrame: {
+    position: 'absolute',
+    top: '8%',
+    left: '8%',
+    width: '84%',
+    height: '84%',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(245,194,231,0.2)',
+  },
   diamondOuter: {
     width: '60%',
     height: '60%',
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: 'rgba(181,207,255,0.5)',
+    borderColor: 'rgba(245,194,231,0.5)',
     transform: [{ rotate: '45deg' }],
     justifyContent: 'center',
     alignItems: 'center',
@@ -240,7 +258,7 @@ const styles = StyleSheet.create({
   diamondInner: {
     width: '60%',
     height: '60%',
-    backgroundColor: 'rgba(181,207,255,0.12)',
+    backgroundColor: 'rgba(245,194,231,0.12)',
     justifyContent: 'center',
     alignItems: 'center',
     transform: [{ rotate: '45deg' }],
@@ -248,7 +266,7 @@ const styles = StyleSheet.create({
   diamondInnerSmall: {},
   diamondCenterText: {
     fontSize: 14,
-    color: 'rgba(181,207,255,0.35)',
+    color: 'rgba(245,194,231,0.4)',
     transform: [{ rotate: '-45deg' }],
   },
   diamondCenterTextSmall: {
@@ -262,7 +280,7 @@ const styles = StyleSheet.create({
     height: '76%',
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: 'rgba(181,207,255,0.35)',
+    borderColor: 'rgba(212,176,99,0.35)',
   },
   royalOuterSmall: {
     borderWidth: 1,
@@ -275,12 +293,12 @@ const styles = StyleSheet.create({
     height: '56%',
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: 'rgba(181,207,255,0.25)',
+    borderColor: 'rgba(212,176,99,0.25)',
   },
   royalCorner: {
     position: 'absolute',
     fontSize: 9,
-    color: 'rgba(181,207,255,0.25)',
+    color: 'rgba(212,176,99,0.3)',
   },
   royalTopLeft: { top: 5, left: 5 },
   royalTopRight: { top: 5, right: 5 },
@@ -288,10 +306,22 @@ const styles = StyleSheet.create({
   royalBottomRight: { bottom: 5, right: 5 },
   royalCenter: {
     fontSize: 16,
-    color: 'rgba(181,207,255,0.3)',
+    color: 'rgba(212,176,99,0.35)',
   },
   royalCenterSmall: {
     fontSize: 12,
+  },
+  royalBottomText: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    fontSize: 8,
+    color: 'rgba(212,176,99,0.2)',
+  },
+  royalBottomTextSmall: {
+    fontSize: 6,
+    bottom: 8,
+    right: 8,
   },
   front: {
     ...StyleSheet.absoluteFillObject,

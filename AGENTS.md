@@ -7,8 +7,9 @@
 - Montserrat font
 
 ## App Config
-- app.json slug: `stitch-ace-poker` (EAS project match)
-- EAS projectId: `fd757005-b117-4939-aeeb-95cc739698ed`
+- slug: `mocha-river`
+- EAS project: `@onecode311/mocha-river`
+- projectId: `f19311af-be1c-4016-a2f0-4e938fc7e483`
 - Build: `eas build --platform android --profile preview`
 
 ## Colors

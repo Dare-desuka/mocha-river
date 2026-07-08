@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Mocha River",
-    "slug": "stitch-ace-poker",
+    "slug": "mocha-river",
     "version": "3.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,7 +29,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "fd757005-b117-4939-aeeb-95cc739698ed"
+        "projectId": "f19311af-be1c-4016-a2f0-4e938fc7e483"
       }
     },
     "owner": "onecode311"

@@ -151,6 +151,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }));
     newState.dealerIndex = state.dealerIndex;
     newState.handCount = state.handCount;
+    newState.blindLevel = state.blindLevel;
     set(newState);
   },
 

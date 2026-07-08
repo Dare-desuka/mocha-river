@@ -33,6 +33,7 @@ export default function GameScreen() {
     handCount,
     blindLevel,
     botActions,
+    actionLog,
     startHand,
     playerAction,
     nextHand,
@@ -305,7 +306,7 @@ export default function GameScreen() {
         winners={winners}
         winningHand={winningHand}
         potAwards={potAwards}
-        actionLog={[]}
+        actionLog={actionLog}
         onClose={() => setShowHistory(false)}
       />
 

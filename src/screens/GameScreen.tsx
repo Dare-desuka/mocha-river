@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES, TABLE_COLORS } from '../constants/theme';
@@ -44,6 +44,7 @@ export default function GameScreen() {
   const [showRaiseSlider, setShowRaiseSlider] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
 
   const player = players[0];
   const playerBet = player?.currentBet || 0;
@@ -73,22 +74,20 @@ export default function GameScreen() {
 
   const handleBack = useCallback(() => {
     if (phase !== 'idle' && phase !== 'showdown') {
-      Alert.alert(
-        'Leave Game?',
-        'Your current hand will be lost.',
-        [
-          { text: 'Stay', style: 'cancel' },
-          { text: 'Leave', style: 'destructive', onPress: () => {
-            resetGame();
-            navigation.goBack();
-          }},
-        ]
-      );
+      setShowLeaveModal(true);
     } else {
       resetGame();
       navigation.goBack();
     }
   }, [phase, navigation, resetGame]);
+
+  const confirmLeave = useCallback(() => {
+    setShowLeaveModal(false);
+    resetGame();
+    navigation.goBack();
+  }, [resetGame, navigation]);
+
+  const cancelLeave = useCallback(() => setShowLeaveModal(false), []);
 
   const handleContinue = useCallback(() => {
     setGameOver(true);
@@ -158,7 +157,7 @@ export default function GameScreen() {
       {/* Header */}
       <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <TouchableOpacity style={styles.headerIconBtn} onPress={handleBack}>
-          <MaterialIcons name="menu" size={28} color={COLORS.onSurfaceVariant} />
+          <MaterialIcons name="arrow-back" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>
           <Text style={styles.headerTitle}>Mocha River</Text>
         <TouchableOpacity style={styles.headerIconBtn} onPress={() => navigation.navigate('Settings')}>
@@ -322,6 +321,24 @@ export default function GameScreen() {
         actionLog={[]}
         onClose={() => setShowHistory(false)}
       />
+
+      {/* Leave confirmation modal */}
+      {showLeaveModal && (
+        <View style={styles.leaveOverlay}>
+          <View style={styles.leaveModal}>
+            <Text style={styles.leaveTitle}>Leave Game?</Text>
+            <Text style={styles.leaveDesc}>Your current hand will be lost.</Text>
+            <View style={styles.leaveButtons}>
+              <TouchableOpacity style={styles.leaveStayBtn} onPress={cancelLeave} activeOpacity={0.7}>
+                <Text style={styles.leaveStayText}>Stay</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.leaveConfirmBtn} onPress={confirmLeave} activeOpacity={0.7}>
+                <Text style={styles.leaveConfirmText}>Leave</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -619,5 +636,70 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 100,
     padding: SPACING.lg,
+  },
+  leaveOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 200,
+    padding: SPACING.xl,
+  },
+  leaveModal: {
+    width: '100%',
+    maxWidth: 300,
+    backgroundColor: '#1e1e2e',
+    borderRadius: BORDER_RADIUS.xl,
+    padding: SPACING.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(181,207,255,0.2)',
+    alignItems: 'center',
+  },
+  leaveTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.onSurface,
+    marginBottom: SPACING.sm,
+  },
+  leaveDesc: {
+    fontSize: 14,
+    color: COLORS.onSurfaceVariant,
+    textAlign: 'center',
+    marginBottom: SPACING.lg,
+    lineHeight: 20,
+  },
+  leaveButtons: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+    width: '100%',
+  },
+  leaveStayBtn: {
+    flex: 1,
+    paddingVertical: SPACING.sm + 4,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: COLORS.surfaceHighest,
+    borderWidth: 1,
+    borderColor: COLORS.outlineVariant,
+    alignItems: 'center',
+  },
+  leaveStayText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.onSurface,
+  },
+  leaveConfirmBtn: {
+    flex: 1,
+    paddingVertical: SPACING.sm + 4,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: 'rgba(243,139,168,0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(243,139,168,0.5)',
+    alignItems: 'center',
+  },
+  leaveConfirmText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.mochaRed,
   },
 });

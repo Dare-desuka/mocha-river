@@ -156,7 +156,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   resetGame: () => {
     cancelTimers();
-    set(createInitialState());
+    const state = get();
+    const newState = createInitialState();
+    newState.players = newState.players.map((p, i) => ({
+      ...p,
+      chips: i === 0 ? (state.players[0]?.chips || STARTING_CHIPS) : STARTING_CHIPS,
+    }));
+    set(newState);
   },
 
   resetChips: async () => {

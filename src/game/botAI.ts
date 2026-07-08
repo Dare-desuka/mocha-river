@@ -68,44 +68,44 @@ export function makeBotDecision(
     if (pick === 'fold') return { type: 'fold', amount: 0 };
     if (pick === 'check' && canCheck) return { type: 'check', amount: 0 };
     if (pick === 'call' && callAmt > 0 && callAmt <= effStack) return { type: 'call', amount: callAmt };
-    if (pick === 'raise' && effStack > minRaise) return { type: 'raise', amount: Math.min(minRaise * 2, effStack) };
+    if (pick === 'raise' && effStack > minRaise) return { type: 'raise', amount: Math.round(Math.min(minRaise * 2, effStack)) };
   }
 
   // Bluff: 15% with weak hands in late position
   if (strength < 0.3 && position === 'late' && Math.random() < (0.15 * dm) && effStack > minRaise * 3) {
-    return { type: 'raise', amount: Math.min(minRaise * 3, effStack) };
+    return { type: 'raise', amount: Math.round(Math.min(minRaise * 3, effStack)) };
   }
 
   // Nut hand: big value bet
   if (strength > 0.92 && isPostflop) {
-    const size = Math.min(pot * 0.75 * aggr, effStack);
+    const size = Math.round(Math.min(pot * 0.75 * aggr, effStack));
     if (canCheck) return { type: 'raise', amount: Math.max(size, minRaise) };
-    const raise = Math.max(currentBet * 3, size);
-    return raise >= effStack ? { type: 'all_in', amount: effStack } : { type: 'raise', amount: Math.min(raise, effStack) };
+    const raise = Math.round(Math.max(currentBet * 3, size));
+    return raise >= effStack ? { type: 'all_in', amount: effStack } : { type: 'raise', amount: Math.round(Math.min(raise, effStack)) };
   }
 
   // Very strong: raise/re-raise
   if (strength > 0.8) {
     if (canCheck) {
-      const size = Math.max(pot * 0.6 * aggr, minRaise);
-      return { type: 'raise', amount: Math.min(size, effStack) };
+      const size = Math.round(Math.max(pot * 0.6 * aggr, minRaise));
+      return { type: 'raise', amount: Math.round(Math.min(size, effStack)) };
     }
     if (callAmt >= effStack * 0.4) return { type: 'all_in', amount: effStack };
-    const raise = Math.max(currentBet * 2.5 * aggr, minRaise);
-    return raise >= effStack ? { type: 'all_in', amount: effStack } : { type: 'raise', amount: Math.min(raise, effStack) };
+    const raise = Math.round(Math.max(currentBet * 2.5 * aggr, minRaise));
+    return raise >= effStack ? { type: 'all_in', amount: effStack } : { type: 'raise', amount: Math.round(Math.min(raise, effStack)) };
   }
 
   // Strong: raise or call
   if (strength > 0.65) {
     if (canCheck) {
       if (Math.random() < 0.4 * aggr) {
-        return { type: 'raise', amount: Math.min(minRaise * 2.5 * aggr, effStack) };
+        return { type: 'raise', amount: Math.round(Math.min(minRaise * 2.5 * aggr, effStack)) };
       }
       return { type: 'check', amount: 0 };
     }
     if (callAmt > effStack * 0.3) return { type: 'call', amount: callAmt };
     if (Math.random() < 0.35 * aggr) {
-      return { type: 'raise', amount: Math.min(Math.max(currentBet * 2 * aggr, minRaise), effStack) };
+      return { type: 'raise', amount: Math.round(Math.min(Math.max(currentBet * 2 * aggr, minRaise), effStack)) };
     }
     return { type: 'call', amount: callAmt };
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch, ScrollView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
+import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES } from '../constants/theme';
 import { useSettingsStore } from '../store/settingsStore';
 import { useGameStore } from '../store/gameStore';
 import { STARTING_CHIPS, BotDifficulty } from '../game/types';
@@ -104,6 +104,34 @@ export default function SettingsScreen() {
                 <Text style={styles.difficultyDesc}>{opt.desc}</Text>
               </View>
               {settings.botDifficulty === opt.key && (
+                <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Table Theme */}
+        <Text style={styles.sectionTitle}>TABLE THEME</Text>
+        <View style={styles.sectionCard}>
+          {TABLE_THEMES.map(t => (
+            <TouchableOpacity
+              key={t.id}
+              style={[
+                styles.themeRow,
+                settings.tableTheme === t.id && styles.themeRowActive,
+              ]}
+              onPress={() => update({ tableTheme: t.id })}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.themeSwatch, { backgroundColor: t.bg, borderColor: t.border }]} />
+              <View style={styles.themeInfo}>
+                <Text style={[
+                  styles.themeLabel,
+                  settings.tableTheme === t.id && styles.themeLabelActive,
+                ]}>{t.name}</Text>
+                <Text style={styles.themeDesc}>Blind {t.label}</Text>
+              </View>
+              {settings.tableTheme === t.id && (
                 <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
               )}
             </TouchableOpacity>
@@ -274,6 +302,40 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   difficultyDesc: {
+    fontSize: 11,
+    color: COLORS.onSurfaceVariant,
+    marginTop: 2,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    paddingVertical: SPACING.sm + 2,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.xs,
+  },
+  themeRowActive: {
+    backgroundColor: 'rgba(181, 207, 255, 0.08)',
+  },
+  themeSwatch: {
+    width: 32,
+    height: 32,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 2,
+  },
+  themeInfo: {
+    flex: 1,
+  },
+  themeLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.onSurface,
+  },
+  themeLabelActive: {
+    color: COLORS.primary,
+  },
+  themeDesc: {
     fontSize: 11,
     color: COLORS.onSurfaceVariant,
     marginTop: 2,

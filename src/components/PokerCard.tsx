@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { Card as CardType, SUIT_SYMBOLS, SUIT_COLORS, RANK_NAMES } from '../game/types';
 import { BORDER_RADIUS } from '../constants/theme';
 
@@ -7,9 +7,37 @@ interface Props {
   card: CardType;
   hidden?: boolean;
   small?: boolean;
+  flipped?: boolean;
 }
 
-const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small }) => {
+const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: showAnimation }) => {
+  const flipAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    flipAnim.setValue(0);
+    Animated.spring(flipAnim, {
+      toValue: 1,
+      friction: 7,
+      tension: 50,
+      useNativeDriver: true,
+    }).start();
+  }, [card.rank, card.suit, showAnimation]);
+
+  const rotateY = flipAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['90deg', '0deg'],
+  });
+
+  const frontOpacity = flipAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, 0, 1],
+  });
+
+  const backOpacity = flipAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [1, 1, 0],
+  });
+
   if (hidden) {
     return (
       <View style={[styles.card, styles.cardBack, small && styles.cardSmall]}>
@@ -29,17 +57,27 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small }) => {
 
   return (
     <View style={[styles.card, small && styles.cardSmall]}>
-      <View style={styles.cornerTop}>
-        <Text style={[styles.rank, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
-        <Text style={[styles.suitCorner, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
-      </View>
-      <View style={styles.centerArea}>
-        <Text style={[styles.suitCenter, small && styles.suitCenterSmall, { color: suitColor }]}>{suitSymbol}</Text>
-      </View>
-      <View style={styles.cornerBottom}>
-        <Text style={[styles.rank, styles.rankBottom, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
-        <Text style={[styles.suitCorner, styles.suitBottom, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
-      </View>
+      <Animated.View style={[styles.backOverlay, { opacity: backOpacity }, small && styles.cardSmall]}>
+        <View style={[styles.backPatternFill]}>
+          <View style={styles.backFrame} />
+          <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }] }]} />
+          <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }] }]} />
+          <Text style={styles.backText}>♠♥♣♦</Text>
+        </View>
+      </Animated.View>
+      <Animated.View style={[styles.front, { opacity: frontOpacity }]}>
+        <View style={styles.cornerTop}>
+          <Text style={[styles.rank, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
+          <Text style={[styles.suitCorner, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
+        </View>
+        <View style={styles.centerArea}>
+          <Text style={[styles.suitCenter, small && styles.suitCenterSmall, { color: suitColor }]}>{suitSymbol}</Text>
+        </View>
+        <View style={styles.cornerBottom}>
+          <Text style={[styles.rank, styles.rankBottom, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
+          <Text style={[styles.suitCorner, styles.suitBottom, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
+        </View>
+      </Animated.View>
     </View>
   );
 });
@@ -59,6 +97,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     borderWidth: 0.5,
     borderColor: '#b0b8cf',
+    position: 'relative',
   },
   cardSmall: {
     width: 48,
@@ -100,6 +139,25 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(181,207,255,0.2)',
     letterSpacing: 4,
+  },
+  backOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: 2,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  backPatternFill: {
+    flex: 1,
+    backgroundColor: '#242638',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  front: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: 1,
   },
   cornerTop: {
     position: 'absolute',

@@ -101,7 +101,12 @@ export const TYPOGRAPHY: Record<string, TextStyle> = {
   headlineLgMobile: { fontFamily: FONT_FAMILY, fontSize: 28, fontWeight: '700', lineHeight: 36 },
 };
 
-export const TABLE_COLORS = {
-  bg: '#242437',
-  border: '#171827',
-};
+export const TABLE_THEMES = [
+  { id: 'classic', name: 'Classic Green', bg: '#242437', border: '#171827', felt: '#313244', label: '10/20' },
+  { id: 'royal', name: 'Royal Blue', bg: '#1a2744', border: '#0f1a33', felt: '#243357', label: '15/30' },
+  { id: 'midnight', name: 'Midnight Purple', bg: '#241835', border: '#1a1128', felt: '#302244', label: '25/50' },
+  { id: 'crimson', name: 'Crimson', bg: '#2e1414', border: '#210e0e', felt: '#3b1a1a', label: '50/100' },
+  { id: 'emerald', name: 'Emerald', bg: '#14281e', border: '#0d1d15', felt: '#1a3327', label: '100/200' },
+];
+
+export const TABLE_COLORS = TABLE_THEMES[0];

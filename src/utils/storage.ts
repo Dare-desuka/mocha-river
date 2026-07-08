@@ -38,12 +38,14 @@ export interface Settings {
   soundEnabled: boolean;
   vibrationEnabled: boolean;
   botDifficulty: 'easy' | 'medium' | 'hard';
+  tableTheme: string;
 }
 
 const DEFAULT_SETTINGS: Settings = {
   soundEnabled: true,
   vibrationEnabled: true,
   botDifficulty: 'medium',
+  tableTheme: 'classic',
 };
 
 export async function saveSettings(settings: Settings): Promise<void> {

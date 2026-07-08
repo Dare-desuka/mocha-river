@@ -13,6 +13,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     soundEnabled: true,
     vibrationEnabled: true,
     botDifficulty: 'medium',
+    tableTheme: 'classic',
   },
 
   load: async () => {

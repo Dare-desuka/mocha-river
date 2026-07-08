@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { COLORS, BORDER_RADIUS, SPACING, TABLE_COLORS } from '../constants/theme';
+import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES, TABLE_COLORS } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
+import { useSettingsStore } from '../store/settingsStore';
 import { ActionType } from '../game/types';
 import { formatChips } from '../utils/format';
 import PokerCard from '../components/PokerCard';
@@ -36,6 +37,9 @@ export default function GameScreen() {
     playerAction,
     nextHand,
   } = useGameStore();
+  const settings = useSettingsStore(s => s.settings);
+
+  const tableTheme = TABLE_THEMES.find(t => t.id === settings.tableTheme) || TABLE_THEMES[0];
 
   const [showRaiseSlider, setShowRaiseSlider] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -165,10 +169,10 @@ export default function GameScreen() {
       {/* Game area */}
       <View style={styles.gameArea}>
         {/* Oval table */}
-        <View style={[styles.tableOval, { borderColor: TABLE_COLORS.border }]}>
-          <View style={[styles.tableGradientOuter, { backgroundColor: TABLE_COLORS.bg }]}>
-            <View style={styles.tableGradientMid} />
-            <View style={styles.tableGradientInner} />
+        <View style={[styles.tableOval, { borderColor: tableTheme.border }]}>
+          <View style={[styles.tableGradientOuter, { backgroundColor: tableTheme.bg }]}>
+            <View style={[styles.tableGradientMid, { backgroundColor: tableTheme.felt }]} />
+            <View style={[styles.tableGradientInner, { backgroundColor: tableTheme.felt }]} />
           </View>
           {/* Bot Top */}
           <View style={styles.botTop}>

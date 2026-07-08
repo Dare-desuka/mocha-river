@@ -409,11 +409,11 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
 
 function formatBotActionText(state: GameState, player: Player, actionType: ActionType, amount: number): string {
   switch (actionType) {
-    case 'fold': return `${player.name} folds`;
-    case 'check': return `${player.name} checks`;
-    case 'call': return `${player.name} calls ${amount}`;
-    case 'raise': return `${player.name} raises to ${amount}`;
-    case 'all_in': return `${player.name} goes all-in (${amount})`;
+    case 'fold': return 'FOLD';
+    case 'check': return 'CHECK';
+    case 'call': return `CALL ${amount}`;
+    case 'raise': return `RAISE ${amount}`;
+    case 'all_in': return `ALL-IN ${amount}`;
   }
 }
 

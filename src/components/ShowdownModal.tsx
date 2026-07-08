@@ -14,7 +14,7 @@ interface Props {
   potAwards: PotAward[];
   players: Player[];
   communityCards: Player['holeCards'];
-  onNextHand: () => void;
+  onContinue: () => void;
   onQuit: () => void;
 }
 
@@ -26,7 +26,7 @@ const ShowdownModal: React.FC<Props> = ({
   potAwards,
   players,
   communityCards,
-  onNextHand,
+  onContinue,
   onQuit,
 }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -42,7 +42,7 @@ const ShowdownModal: React.FC<Props> = ({
   }, {});
   const totalWinnings = Object.values(winningsByPlayer).reduce((sum, amount) => sum + amount, 0);
 
-  const handleNextHand = () => onNextHand();
+  const handleContinue = () => onContinue();
   const handleQuit = () => onQuit();
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const ShowdownModal: React.FC<Props> = ({
           </ScrollView>
 
           <View style={styles.footerRow}>
-            <TouchableOpacity style={styles.continueBtn} onPress={handleNextHand} activeOpacity={0.8}>
+            <TouchableOpacity style={styles.continueBtn} onPress={handleContinue} activeOpacity={0.8}>
               <Text style={styles.continueBtnText}>Continue</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>

@@ -49,8 +49,19 @@ const PlayerSeat: React.FC<Props> = React.memo(({
 
       {/* Bot action text */}
       {botAction && (
-        <View style={styles.actionBadge}>
-          <Text style={styles.actionText} numberOfLines={2}>{botAction}</Text>
+        <View style={[
+          styles.actionBadge,
+          botAction.startsWith('FOLD') && styles.actionFold,
+          botAction.startsWith('CHECK') && styles.actionCheck,
+          botAction.startsWith('CALL') && styles.actionCall,
+          botAction.startsWith('RAISE') && styles.actionRaise,
+          botAction.startsWith('ALL-IN') && styles.actionAllIn,
+        ]}>
+          <Text style={[
+            styles.actionText,
+            botAction.startsWith('FOLD') && styles.actionTextDark,
+            botAction.startsWith('ALL-IN') && styles.actionTextDark,
+          ]}>{botAction}</Text>
         </View>
       )}
 
@@ -242,19 +253,45 @@ const styles = StyleSheet.create({
   },
   actionBadge: {
     marginTop: 4,
-    backgroundColor: 'rgba(181, 207, 255, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: BORDER_RADIUS.sm,
-    borderWidth: 1,
-    borderColor: 'rgba(181, 207, 255, 0.3)',
     maxWidth: 120,
   },
+  actionFold: {
+    backgroundColor: 'rgba(127, 132, 141, 0.3)',
+    borderWidth: 1,
+    borderColor: 'rgba(127, 132, 141, 0.5)',
+  },
+  actionCheck: {
+    backgroundColor: 'rgba(137, 180, 250, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(137, 180, 250, 0.4)',
+  },
+  actionCall: {
+    backgroundColor: 'rgba(166, 227, 161, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(166, 227, 161, 0.4)',
+  },
+  actionRaise: {
+    backgroundColor: 'rgba(243, 139, 168, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(243, 139, 168, 0.4)',
+  },
+  actionAllIn: {
+    backgroundColor: 'rgba(250, 179, 135, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(250, 179, 135, 0.4)',
+  },
   actionText: {
-    fontSize: 10,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '800',
     color: COLORS.primary,
     textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  actionTextDark: {
+    color: COLORS.onSurfaceVariant,
   },
   cards: {
     flexDirection: 'row',

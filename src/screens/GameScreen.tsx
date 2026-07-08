@@ -36,6 +36,7 @@ export default function GameScreen() {
   } = useGameStore();
 
   const [showRaiseSlider, setShowRaiseSlider] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   const player = players[0];
   const playerBet = player?.currentBet || 0;
@@ -43,7 +44,6 @@ export default function GameScreen() {
   const canCheck = currentBet <= playerBet;
   const chipsAfterCall = Math.max((player?.chips || 0) - callAmount, 0);
   const canRaise = chipsAfterCall >= minRaise;
-  const raisePreview = canRaise ? Math.min(Math.max(minRaise * 3, minRaise), chipsAfterCall) : 0;
 
   useEffect(() => {
     startHand();
@@ -83,8 +83,13 @@ export default function GameScreen() {
     }
   }, [phase, navigation, nextHand]);
 
-  const handleNextHand = useCallback(() => {
+  const handleContinue = useCallback(() => {
+    setGameOver(false);
+  }, []);
+
+  const handleDeal = useCallback(() => {
     nextHand();
+    setGameOver(false);
     setTimeout(() => startHand(), 100);
   }, [nextHand, startHand]);
 
@@ -134,7 +139,6 @@ export default function GameScreen() {
           activeOpacity={0.75}
         >
           <Text style={styles.raiseButtonText}>Raise</Text>
-          {canRaise && <Text style={styles.raiseButtonSub}>{formatChips(raisePreview)}</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -253,10 +257,10 @@ export default function GameScreen() {
       </View>
 
       {/* Action bar */}
-      {phase === 'showdown' ? (
+      {phase === 'showdown' && !gameOver ? null : phase === 'showdown' && gameOver ? (
         <View style={styles.actionBar}>
-          <TouchableOpacity style={styles.continueBtn} onPress={handleNextHand} activeOpacity={0.8}>
-            <Text style={styles.continueBtnText}>Continue</Text>
+          <TouchableOpacity style={styles.continueBtn} onPress={handleDeal} activeOpacity={0.8}>
+            <Text style={styles.continueBtnText}>Deal</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
             <Text style={styles.quitBtnText}>Quit</Text>
@@ -278,14 +282,14 @@ export default function GameScreen() {
 
       {/* Showdown modal */}
       <ShowdownModal
-        visible={phase === 'showdown' && winner !== null}
+        visible={phase === 'showdown' && winner !== null && !gameOver}
         winner={winner}
         winners={winners}
         winningHand={winningHand}
         potAwards={potAwards}
         players={players}
         communityCards={communityCards}
-        onNextHand={handleNextHand}
+        onContinue={handleContinue}
         onQuit={handleQuit}
       />
     </View>

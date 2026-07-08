@@ -58,12 +58,24 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
     trackWidth.current = e.nativeEvent.layout.width;
   }, []);
 
+  const step = Math.max(1, Math.round((max - min) / 20) || 1);
+  const dec = () => setSelected(Math.max(min, selected - step));
+  const inc = () => setSelected(Math.min(max, selected + step));
+
   const fillRatio = max > min ? (selected - min) / (max - min) : 0;
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Raise By</Text>
-      <Text style={styles.amount}>{formatChips(selected)}</Text>
+      <View style={styles.amountRow}>
+        <TouchableOpacity style={styles.stepBtn} onPress={dec} activeOpacity={0.6}>
+          <Text style={styles.stepBtnText}>−</Text>
+        </TouchableOpacity>
+        <Text style={styles.amount}>{formatChips(selected)}</Text>
+        <TouchableOpacity style={styles.stepBtn} onPress={inc} activeOpacity={0.6}>
+          <Text style={styles.stepBtnText}>+</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Draggable slider */}
       <View style={styles.sliderSection}>
@@ -126,11 +138,34 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: SPACING.xs,
   },
+  amountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.lg,
+    marginBottom: SPACING.md,
+  },
+  stepBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.surfaceHighest,
+    borderWidth: 1.5,
+    borderColor: COLORS.outlineVariant,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepBtnText: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: COLORS.onSurface,
+    lineHeight: 28,
+  },
   amount: {
     fontSize: 32,
     fontWeight: '700',
     color: COLORS.mochaPeach,
-    marginBottom: SPACING.md,
+    minWidth: 80,
+    textAlign: 'center',
   },
   sliderSection: {
     flexDirection: 'row',

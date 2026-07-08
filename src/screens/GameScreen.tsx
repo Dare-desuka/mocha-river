@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   },
   botTop: {
     position: 'absolute',
-    top: -48,
+    top: -36,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   },
   botLeft: {
     position: 'absolute',
-    left: -50,
+    left: -44,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   },
   botRight: {
     position: 'absolute',
-    right: -50,
+    right: -44,
     top: 0,
     bottom: 0,
     justifyContent: 'center',

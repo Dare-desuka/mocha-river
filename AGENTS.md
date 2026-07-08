@@ -29,10 +29,16 @@
 - Hand history modal after each hand
 - Profile: custom photo (image picker) + editable name
 - Leave mid-game resets, no auto-advance after showdown (Continue/Quit)
+- Card back selector: Classic, Diamond, Royal (3 CSS-only designs)
+- Sound pack selector: Classic, Arcade, Muted (synthesized WAV)
 
 ## Future Plans
-- **Card back selector** — 2-3 variasi gambar belakang kartu
-- **Sound pack variasi** — suara berbeda untuk fold/call/check/raise/win
+- **Multiplayer online** — real-time Texas Hold'em via WebSocket + server (Node.js/Room management)
+  - Lobby: create/join room, minimal 2 pemain
+  - Turn-based sync via server, timeout jika pemain AFK
+  - Spectator mode untuk pemain yang sudah fold
+  - Chat in-game (opsional)
+  - Profile photo & nama dari akun
 
 ## Key files
 - `src/game/types.ts` — Card types, suit colors, BotAction, BotDifficulty, BLIND_LEVELS

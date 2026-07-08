@@ -16,8 +16,9 @@ export default function HomeTabs() {
     scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
   }, []);
 
+  const sbHeight = StatusBar.currentHeight || 28;
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: sbHeight }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
       <ScrollView
         ref={scrollRef}

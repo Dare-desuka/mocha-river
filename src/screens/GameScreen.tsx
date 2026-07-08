@@ -156,7 +156,7 @@ export default function GameScreen() {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
 
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <TouchableOpacity style={styles.headerIconBtn} onPress={handleBack}>
           <MaterialIcons name="menu" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>

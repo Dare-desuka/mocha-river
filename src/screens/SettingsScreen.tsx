@@ -30,7 +30,7 @@ export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={24} color={COLORS.primaryContainer} />
         </TouchableOpacity>

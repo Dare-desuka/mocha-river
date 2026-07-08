@@ -48,7 +48,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <View style={styles.headerBtn} />
         <Text style={styles.headerTitle}>Mocha River</Text>
         <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('Settings')}>

@@ -69,7 +69,7 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
       <Text style={styles.title}>Raise By</Text>
       <View style={styles.amountRow}>
         <TouchableOpacity style={styles.stepBtn} onPress={dec} activeOpacity={0.6}>
-          <Text style={styles.stepBtnText}>−</Text>
+          <Text style={styles.stepBtnText}>-</Text>
         </TouchableOpacity>
         <Text style={styles.amount}>{formatChips(selected)}</Text>
         <TouchableOpacity style={styles.stepBtn} onPress={inc} activeOpacity={0.6}>

@@ -84,9 +84,18 @@ function ClassicBack({ small }: { small?: boolean }) {
   return (
     <View style={styles.backPattern}>
       <View style={styles.backFrame} />
+      <View style={styles.backInnerFrame} />
       <View style={[styles.backDiag, { transform: [{ rotate: '45deg' }] }]} />
       <View style={[styles.backDiag, { transform: [{ rotate: '-45deg' }] }]} />
-      <Text style={styles.backText}>♠♥♣♦</Text>
+      <View style={[styles.backDiag, { transform: [{ rotate: '135deg' }] }]} />
+      <View style={[styles.backDiag, { transform: [{ rotate: '-135deg' }] }]} />
+      <Text style={[styles.backCorner, styles.backCornerTL]}>♠</Text>
+      <Text style={[styles.backCorner, styles.backCornerTR]}>♥</Text>
+      <Text style={[styles.backCorner, styles.backCornerBL]}>♣</Text>
+      <Text style={[styles.backCorner, styles.backCornerBR]}>♦</Text>
+      <View style={styles.backCenterDiamond}>
+        <Text style={[styles.backCenterText, small && styles.backCenterTextSmall]}>♠♥♣♦</Text>
+      </View>
     </View>
   );
 }
@@ -160,26 +169,60 @@ const styles = StyleSheet.create({
   },
   backFrame: {
     position: 'absolute',
-    top: '15%',
-    left: '15%',
-    width: '70%',
-    height: '70%',
-    borderRadius: 4,
+    top: '10%',
+    left: '10%',
+    width: '80%',
+    height: '80%',
+    borderRadius: 5,
     borderWidth: 1.5,
-    borderColor: 'rgba(181,207,255,0.5)',
+    borderColor: 'rgba(181,207,255,0.45)',
+  },
+  backInnerFrame: {
+    position: 'absolute',
+    top: '20%',
+    left: '20%',
+    width: '60%',
+    height: '60%',
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(181,207,255,0.2)',
   },
   backDiag: {
     position: 'absolute',
-    width: '150%',
-    height: 1.5,
-    backgroundColor: 'rgba(181,207,255,0.15)',
+    width: '200%',
+    height: 1,
+    backgroundColor: 'rgba(181,207,255,0.1)',
     top: '50%',
-    left: '-25%',
+    left: '-50%',
   },
-  backText: {
-    fontSize: 10,
-    color: 'rgba(181,207,255,0.2)',
-    letterSpacing: 4,
+  backCorner: {
+    position: 'absolute',
+    fontSize: 8,
+    color: 'rgba(181,207,255,0.25)',
+  },
+  backCornerTL: { top: 6, left: 6 },
+  backCornerTR: { top: 6, right: 6 },
+  backCornerBL: { bottom: 6, left: 6 },
+  backCornerBR: { bottom: 6, right: 6 },
+  backCenterDiamond: {
+    width: '50%',
+    height: '50%',
+    borderRadius: 2,
+    borderWidth: 0.5,
+    borderColor: 'rgba(181,207,255,0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ rotate: '45deg' }],
+  },
+  backCenterText: {
+    fontSize: 8,
+    color: 'rgba(181,207,255,0.35)',
+    transform: [{ rotate: '-45deg' }],
+    letterSpacing: 3,
+  },
+  backCenterTextSmall: {
+    fontSize: 6,
+    letterSpacing: 2,
   },
   diamondOuter: {
     width: '60%',

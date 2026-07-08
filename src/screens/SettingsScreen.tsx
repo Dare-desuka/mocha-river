@@ -5,16 +5,27 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { useSettingsStore } from '../store/settingsStore';
 import { useGameStore } from '../store/gameStore';
-import { STARTING_CHIPS } from '../game/types';
+import { STARTING_CHIPS, BotDifficulty } from '../game/types';
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
   const { settings, update } = useSettingsStore();
-  const { resetChips } = useGameStore();
+  const { resetChips, setDifficulty } = useGameStore();
 
   const handleReset = () => {
     resetChips();
   };
+
+  const handleDifficulty = (d: BotDifficulty) => {
+    update({ botDifficulty: d });
+    setDifficulty(d);
+  };
+
+  const difficultyOptions: { key: BotDifficulty; label: string; desc: string }[] = [
+    { key: 'easy', label: 'Easy', desc: 'Bots make mistakes' },
+    { key: 'medium', label: 'Medium', desc: 'Balanced play' },
+    { key: 'hard', label: 'Hard', desc: 'Tight-aggressive' },
+  ];
 
   return (
     <View style={styles.container}>
@@ -70,6 +81,33 @@ export default function SettingsScreen() {
               thumbColor={settings.vibrationEnabled ? COLORS.onTertiary : COLORS.outline}
             />
           </View>
+        </View>
+
+        {/* Bot Difficulty */}
+        <Text style={styles.sectionTitle}>BOT DIFFICULTY</Text>
+        <View style={styles.sectionCard}>
+          {difficultyOptions.map(opt => (
+            <TouchableOpacity
+              key={opt.key}
+              style={[
+                styles.difficultyRow,
+                settings.botDifficulty === opt.key && styles.difficultyRowActive,
+              ]}
+              onPress={() => handleDifficulty(opt.key)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.difficultyInfo}>
+                <Text style={[
+                  styles.difficultyLabel,
+                  settings.botDifficulty === opt.key && styles.difficultyLabelActive,
+                ]}>{opt.label}</Text>
+                <Text style={styles.difficultyDesc}>{opt.desc}</Text>
+              </View>
+              {settings.botDifficulty === opt.key && (
+                <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
 
         {/* Danger Zone */}
@@ -211,5 +249,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.mochaRed,
+  },
+  difficultyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: SPACING.sm + 4,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.xs,
+  },
+  difficultyRowActive: {
+    backgroundColor: 'rgba(181, 207, 255, 0.08)',
+  },
+  difficultyInfo: {
+    flex: 1,
+  },
+  difficultyLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.onSurface,
+  },
+  difficultyLabelActive: {
+    color: COLORS.primary,
+  },
+  difficultyDesc: {
+    fontSize: 11,
+    color: COLORS.onSurfaceVariant,
+    marginTop: 2,
   },
 });

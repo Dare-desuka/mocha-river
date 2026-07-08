@@ -11,6 +11,7 @@ interface Props {
   isDealer: boolean;
   position: 'bottom' | 'left' | 'top' | 'right';
   showCards?: boolean;
+  botAction?: string | null;
 }
 
 const PlayerSeat: React.FC<Props> = React.memo(({
@@ -19,6 +20,7 @@ const PlayerSeat: React.FC<Props> = React.memo(({
   isDealer,
   position,
   showCards,
+  botAction,
 }) => {
   const isActive = !player.folded && !player.isAllIn;
   const initials = player.isBot ? player.name.replace('Bot ', '').slice(0, 1) : 'P';
@@ -44,6 +46,13 @@ const PlayerSeat: React.FC<Props> = React.memo(({
 
       {/* Name */}
       {position !== 'bottom' && <Text style={styles.name} numberOfLines={1}>{player.name}</Text>}
+
+      {/* Bot action text */}
+      {botAction && (
+        <View style={styles.actionBadge}>
+          <Text style={styles.actionText} numberOfLines={2}>{botAction}</Text>
+        </View>
+      )}
 
       {/* Current-turn label */}
       {isCurrentPlayer && isActive && (
@@ -230,6 +239,22 @@ const styles = StyleSheet.create({
   },
   turnTextBottom: {
     marginTop: 8,
+  },
+  actionBadge: {
+    marginTop: 4,
+    backgroundColor: 'rgba(181, 207, 255, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(181, 207, 255, 0.3)',
+    maxWidth: 120,
+  },
+  actionText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: COLORS.primary,
+    textAlign: 'center',
   },
   cards: {
     flexDirection: 'row',

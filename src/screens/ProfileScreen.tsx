@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING, TYPOGRAPHY } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { formatChips } from '../utils/format';
+import { loadStats, Stats } from '../utils/storage';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
   const players = useGameStore(s => s.players);
   const handCount = useGameStore(s => s.handCount);
   const playerChips = players[0]?.chips || 0;
+  const [stats, setStats] = useState<Stats>({ totalHands: 0, handsWon: 0, biggestWin: 0, biggestWinDate: null });
+
+  useEffect(() => {
+    loadStats().then(setStats);
+  }, [handCount]);
 
   return (
     <View style={styles.container}>
@@ -58,14 +64,18 @@ export default function ProfileScreen() {
               <MaterialIcons name="trending-up" size={16} color={COLORS.mochaPeach} />
               <Text style={styles.statLabel}>Win Rate</Text>
             </View>
-            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statValue}>
+              {stats.totalHands > 0
+                ? `${Math.round((stats.handsWon / stats.totalHands) * 100)}%`
+                : '--'}
+            </Text>
           </View>
           <View style={[styles.statCard, styles.statCardWide]}>
             <View style={styles.statHeader}>
               <MaterialIcons name="star" size={16} color={COLORS.mochaPeach} />
               <Text style={styles.statLabel}>Biggest Win</Text>
             </View>
-            <Text style={styles.statValue}>{formatChips(playerChips)}</Text>
+            <Text style={styles.statValue}>{stats.biggestWin > 0 ? formatChips(stats.biggestWin) : '--'}</Text>
           </View>
         </View>
 
@@ -81,17 +91,23 @@ export default function ProfileScreen() {
           <Text style={styles.settingsCtaArrow}>›</Text>
         </TouchableOpacity>
 
-        {/* Recent Matches */}
-        <Text style={styles.sectionTitle}>RECENT MATCHES</Text>
+        {/* Session stats */}
+        <Text style={styles.sectionTitle}>SESSION</Text>
         <View style={styles.matchList}>
           <View style={styles.matchRow}>
             <View style={styles.matchInfo}>
-              <Text style={styles.matchGame}>No Limit Hold'em</Text>
-              <Text style={styles.matchBlinds}>$10/$20 Blinds</Text>
+              <Text style={styles.matchGame}>Hands Played</Text>
             </View>
             <View style={styles.matchResult}>
-              <Text style={styles.matchAmount}>—</Text>
-              <Text style={styles.matchTime}>Play more to see history</Text>
+              <Text style={[styles.matchAmount, { color: COLORS.onSurface }]}>{stats.totalHands}</Text>
+            </View>
+          </View>
+          <View style={styles.matchRow}>
+            <View style={styles.matchInfo}>
+              <Text style={styles.matchGame}>Hands Won</Text>
+            </View>
+            <View style={styles.matchResult}>
+              <Text style={[styles.matchAmount, { color: COLORS.onSurface }]}>{stats.handsWon}</Text>
             </View>
           </View>
         </View>

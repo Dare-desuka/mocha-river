@@ -11,6 +11,7 @@ import TutorialScreen from './src/screens/TutorialScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import { useSettingsStore } from './src/store/settingsStore';
+import { useGameStore } from './src/store/gameStore';
 import { initSound } from './src/utils/soundManager';
 
 const Stack = createNativeStackNavigator();
@@ -38,7 +39,10 @@ export default function App() {
   const [fontsLoaded] = useFonts({ Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular });
 
   useEffect(() => {
-    useSettingsStore.getState().load();
+    useSettingsStore.getState().load().then(() => {
+      const { botDifficulty } = useSettingsStore.getState().settings;
+      useGameStore.getState().setDifficulty(botDifficulty);
+    });
     initSound();
   }, []);
 

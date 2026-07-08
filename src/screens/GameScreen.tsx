@@ -29,6 +29,7 @@ export default function GameScreen() {
     isPlayerTurn,
     minRaise,
     handCount,
+    botActionMessage,
     startHand,
     playerAction,
     nextHand,
@@ -163,6 +164,7 @@ export default function GameScreen() {
               isDealer={dealerIndex === 2}
               position="top"
               showCards={phase === 'showdown'}
+              botAction={botActionMessage?.playerIndex === 2 ? botActionMessage.text : null}
             />
           </View>
 
@@ -174,6 +176,7 @@ export default function GameScreen() {
               isDealer={dealerIndex === 1}
               position="left"
               showCards={phase === 'showdown'}
+              botAction={botActionMessage?.playerIndex === 1 ? botActionMessage.text : null}
             />
           </View>
 
@@ -185,6 +188,7 @@ export default function GameScreen() {
               isDealer={dealerIndex === 3}
               position="right"
               showCards={phase === 'showdown'}
+              botAction={botActionMessage?.playerIndex === 3 ? botActionMessage.text : null}
             />
           </View>
 

@@ -1,4 +1,4 @@
-import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, STARTING_CHIPS, HandEvaluation, PotAward } from './types';
+import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, STARTING_CHIPS, HandEvaluation, PotAward, BotAction } from './types';
 import { getDeck, shuffleDeck, dealCards } from './deck';
 import { evaluateBestHand, compareHands, getHandName } from './handEvaluator';
 import { makeBotDecision } from './botAI';
@@ -63,6 +63,8 @@ export function createInitialState(): GameState {
     lastRaiserIndex: -1,
     roundActionsSinceLastRaise: 0,
     handCount: 0,
+    botActionMessage: null,
+    difficulty: 'medium',
   };
 }
 
@@ -405,29 +407,45 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
   return newState;
 }
 
-export function processBotActions(state: GameState): GameState {
-  let currentState = { ...state };
-  while (currentState.phase !== 'showdown' && currentState.phase !== 'idle' && !currentState.isPlayerTurn) {
-    const player = currentState.players[currentState.currentPlayerIndex];
-    if (!player.isBot || player.folded || player.isAllIn) break;
-
-    const decision = makeBotDecision(
-      player,
-      currentState.communityCards,
-      currentState.currentBet,
-      currentState.pot,
-      currentState.minRaise,
-      currentState.dealerIndex,
-      currentState.players.length,
-    );
-
-    const nextState = handleAction(currentState, decision.type, decision.amount);
-    if (nextState === currentState) {
-      const fallback: ActionType = currentState.currentBet > player.currentBet ? 'call' : 'check';
-      currentState = handleAction(currentState, fallback);
-    } else {
-      currentState = nextState;
-    }
+function formatBotActionText(state: GameState, player: Player, actionType: ActionType, amount: number): string {
+  switch (actionType) {
+    case 'fold': return `${player.name} folds`;
+    case 'check': return `${player.name} checks`;
+    case 'call': return `${player.name} calls ${amount}`;
+    case 'raise': return `${player.name} raises to ${amount}`;
+    case 'all_in': return `${player.name} goes all-in (${amount})`;
   }
-  return currentState;
+}
+
+export function processOneBotAction(state: GameState): GameState {
+  if (state.phase === 'showdown' || state.phase === 'idle' || state.isPlayerTurn) return state;
+
+  const player = state.players[state.currentPlayerIndex];
+  if (!player.isBot || player.folded || player.isAllIn) return { ...state, botActionMessage: null };
+
+  const decision = makeBotDecision(
+    player,
+    state.communityCards,
+    state.currentBet,
+    state.pot,
+    state.minRaise,
+    state.dealerIndex,
+    state.players.length,
+    state.difficulty,
+  );
+
+  const nextState = handleAction(state, decision.type, decision.amount);
+  if (nextState === state) {
+    const fallback: ActionType = state.currentBet > player.currentBet ? 'call' : 'check';
+    const fallbackState = handleAction(state, fallback);
+    return {
+      ...fallbackState,
+      botActionMessage: { playerIndex: player.index, text: formatBotActionText(fallbackState, player, fallback, state.currentBet - player.currentBet) },
+    };
+  }
+
+  return {
+    ...nextState,
+    botActionMessage: { playerIndex: player.index, text: formatBotActionText(nextState, player, decision.type, decision.amount) },
+  };
 }

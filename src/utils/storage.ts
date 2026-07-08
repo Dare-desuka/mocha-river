@@ -1,8 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export interface Stats {
+  totalHands: number;
+  handsWon: number;
+  biggestWin: number;
+  biggestWinDate: number | null;
+}
+
 const KEYS = {
   CHIP_BALANCE: 'poker_chip_balance',
   SETTINGS: 'poker_settings',
+  STATS: 'poker_stats',
 };
 
 export async function saveChipBalance(chips: number): Promise<void> {
@@ -23,11 +31,13 @@ export async function loadChipBalance(): Promise<number | null> {
 export interface Settings {
   soundEnabled: boolean;
   vibrationEnabled: boolean;
+  botDifficulty: 'easy' | 'medium' | 'hard';
 }
 
 const DEFAULT_SETTINGS: Settings = {
   soundEnabled: true,
   vibrationEnabled: true,
+  botDifficulty: 'medium',
 };
 
 export async function saveSettings(settings: Settings): Promise<void> {
@@ -39,8 +49,25 @@ export async function saveSettings(settings: Settings): Promise<void> {
 export async function loadSettings(): Promise<Settings> {
   try {
     const val = await AsyncStorage.getItem(KEYS.SETTINGS);
-    return val ? JSON.parse(val) : DEFAULT_SETTINGS;
+    if (!val) return DEFAULT_SETTINGS;
+    const parsed = JSON.parse(val);
+    return { ...DEFAULT_SETTINGS, ...parsed };
   } catch {
     return DEFAULT_SETTINGS;
+  }
+}
+
+export async function saveStats(stats: Stats): Promise<void> {
+  try {
+    await AsyncStorage.setItem(KEYS.STATS, JSON.stringify(stats));
+  } catch {}
+}
+
+export async function loadStats(): Promise<Stats> {
+  try {
+    const val = await AsyncStorage.getItem(KEYS.STATS);
+    return val ? JSON.parse(val) : { totalHands: 0, handsWon: 0, biggestWin: 0, biggestWinDate: null };
+  } catch {
+    return { totalHands: 0, handsWon: 0, biggestWin: 0, biggestWinDate: null };
   }
 }

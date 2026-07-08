@@ -1,4 +1,4 @@
-import { Player, Card, ActionType, BLIND_AMOUNTS, HAND_RANK_VALUES } from './types';
+import { Player, Card, ActionType, BLIND_AMOUNTS, HAND_RANK_VALUES, BotDifficulty } from './types';
 import { evaluateBestHand } from './handEvaluator';
 
 interface BotDecision { type: ActionType; amount: number }
@@ -35,6 +35,12 @@ function handScore(cards: Card[], community: Card[]): number {
   return Math.max(0, Math.min(1, s));
 }
 
+const DIFFICULTY_MULT: Record<BotDifficulty, number> = {
+  easy: 0.55,
+  medium: 1.0,
+  hard: 1.4,
+};
+
 export function makeBotDecision(
   player: Player,
   community: Card[],
@@ -43,18 +49,30 @@ export function makeBotDecision(
   minRaise: number,
   dealerIndex: number,
   playerCount: number,
+  difficulty: BotDifficulty = 'medium',
 ): BotDecision {
+  const dm = DIFFICULTY_MULT[difficulty];
   const strength = handScore(player.holeCards, community);
   const position = getPosition(player.index, dealerIndex, playerCount);
-  const aggr = POS_AGGR[position];
+  const aggr = POS_AGGR[position] * dm;
   const callAmt = currentBet - player.currentBet;
   const canCheck = currentBet <= player.currentBet;
   const potOdds = callAmt / (pot + callAmt);
   const isPostflop = community.length >= 3;
   const effStack = player.chips;
 
+  // Easy bot: random misplays
+  if (difficulty === 'easy' && Math.random() < 0.15) {
+    const actions: ActionType[] = ['call', 'fold', 'check', 'raise'];
+    const pick = actions[Math.floor(Math.random() * 4)];
+    if (pick === 'fold') return { type: 'fold', amount: 0 };
+    if (pick === 'check' && canCheck) return { type: 'check', amount: 0 };
+    if (pick === 'call' && callAmt > 0 && callAmt <= effStack) return { type: 'call', amount: callAmt };
+    if (pick === 'raise' && effStack > minRaise) return { type: 'raise', amount: Math.min(minRaise * 2, effStack) };
+  }
+
   // Bluff: 15% with weak hands in late position
-  if (strength < 0.3 && position === 'late' && Math.random() < 0.15 && effStack > minRaise * 3) {
+  if (strength < 0.3 && position === 'late' && Math.random() < (0.15 * dm) && effStack > minRaise * 3) {
     return { type: 'raise', amount: Math.min(minRaise * 3, effStack) };
   }
 

@@ -26,6 +26,12 @@ export interface HandEvaluation {
 }
 
 export type ActionType = 'fold' | 'check' | 'call' | 'raise' | 'all_in';
+export type BotDifficulty = 'easy' | 'medium' | 'hard';
+
+export interface BotAction {
+  playerIndex: number;
+  text: string;
+}
 
 export interface PlayerAction {
   type: ActionType;
@@ -69,10 +75,12 @@ export interface GameState {
   potAwards: PotAward[];
   actionLog: string[];
   isPlayerTurn: boolean;
+  botActionMessage: BotAction | null;
   minRaise: number;
   lastRaiserIndex: number;
   roundActionsSinceLastRaise: number;
   handCount: number;
+  difficulty: BotDifficulty;
 }
 
 export const HAND_RANK_VALUES: Record<HandRank, number> = {

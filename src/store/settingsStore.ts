@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Settings, loadSettings, saveSettings } from '../utils/storage';
+import { BotDifficulty } from '../game/types';
 
 interface SettingsStore {
   settings: Settings;
@@ -11,6 +12,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   settings: {
     soundEnabled: true,
     vibrationEnabled: true,
+    botDifficulty: 'medium',
   },
 
   load: async () => {

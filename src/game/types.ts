@@ -101,10 +101,10 @@ export const SUIT_SYMBOLS: Record<Suit, string> = {
 };
 
 export const SUIT_COLORS: Record<Suit, string> = {
-  hearts: '#f38ba8',
-  diamonds: '#f5e0dc',
-  clubs: '#94e2d5',
-  spades: '#b4befe',
+  hearts: '#d20f39',
+  diamonds: '#d20f39',
+  clubs: '#11111b',
+  spades: '#11111b',
 };
 
 export const BLIND_AMOUNTS = {

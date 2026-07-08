@@ -35,6 +35,7 @@ export default function GameScreen() {
     startHand,
     playerAction,
     nextHand,
+    resetGame,
   } = useGameStore();
   const settings = useSettingsStore(s => s.settings);
 
@@ -78,16 +79,16 @@ export default function GameScreen() {
         [
           { text: 'Stay', style: 'cancel' },
           { text: 'Leave', style: 'destructive', onPress: () => {
-            nextHand();
+            resetGame();
             navigation.goBack();
           }},
         ]
       );
     } else {
-      nextHand();
+      resetGame();
       navigation.goBack();
     }
-  }, [phase, navigation, nextHand]);
+  }, [phase, navigation, resetGame]);
 
   const handleContinue = useCallback(() => {
     setGameOver(true);
@@ -100,9 +101,9 @@ export default function GameScreen() {
   }, [nextHand, startHand]);
 
   const handleQuit = useCallback(() => {
-    nextHand();
+    resetGame();
     navigation.goBack();
-  }, [nextHand, navigation]);
+  }, [resetGame, navigation]);
 
   const callAction = canCheck ? 'check' : 'call';
 

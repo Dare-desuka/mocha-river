@@ -12,6 +12,7 @@ interface GameStore extends GameState {
   startHand: () => void;
   playerAction: (action: ActionType, amount?: number) => void;
   nextHand: () => void;
+  resetGame: () => void;
   resetChips: () => Promise<void>;
   setDifficulty: (d: BotDifficulty) => void;
 }
@@ -151,6 +152,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     newState.dealerIndex = state.dealerIndex;
     newState.handCount = state.handCount;
     set(newState);
+  },
+
+  resetGame: () => {
+    cancelTimers();
+    set(createInitialState());
   },
 
   resetChips: async () => {

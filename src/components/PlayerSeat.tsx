@@ -29,6 +29,14 @@ const PlayerSeat: React.FC<Props> = React.memo(({
 
   return (
     <View style={[styles.container, position === 'bottom' && styles.containerBottom, isCurrentPlayer && isActive && styles.active]}>
+      {/* Hole cards (top for bottom/player) */}
+      {position === 'bottom' && (showCards || !player.isBot) && player.holeCards.length === 2 && (
+        <View style={styles.cards}>
+          <PokerCard card={player.holeCards[0]} small />
+          <PokerCard card={player.holeCards[1]} small />
+        </View>
+      )}
+
       {/* Avatar */}
       <View style={[styles.avatar, { backgroundColor: avatarUri ? 'transparent' : avatarColor }, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
         {avatarUri ? (
@@ -86,14 +94,14 @@ const PlayerSeat: React.FC<Props> = React.memo(({
       {player.isAllIn && <Text style={styles.statusText}>ALL IN</Text>}
       {player.folded && <Text style={styles.foldedText}>Folded</Text>}
 
-      {/* Hole cards */}
-      {(showCards || !player.isBot) && player.holeCards.length === 2 && (
+      {/* Hole cards (bots only at bottom) */}
+      {position !== 'bottom' && (showCards || !player.isBot) && player.holeCards.length === 2 && (
         <View style={styles.cards}>
           <PokerCard card={player.holeCards[0]} small />
           <PokerCard card={player.holeCards[1]} small />
         </View>
       )}
-      {!showCards && player.isBot && isActive && player.holeCards.length === 2 && (
+      {position !== 'bottom' && !showCards && player.isBot && isActive && player.holeCards.length === 2 && (
         <View style={styles.cards}>
           <PokerCard card={player.holeCards[0]} hidden small />
           <PokerCard card={player.holeCards[1]} hidden small />

@@ -91,7 +91,7 @@ export default function GameScreen() {
   }, [phase, navigation, nextHand]);
 
   const handleContinue = useCallback(() => {
-    setGameOver(false);
+    setGameOver(true);
   }, []);
 
   const handleDeal = useCallback(() => {

@@ -5,11 +5,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts, Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { View, Text, ScrollView } from 'react-native';
 
-import HomeScreen from './src/screens/HomeScreen';
+import HomeTabs from './src/screens/HomeTabs';
 import GameScreen from './src/screens/GameScreen';
 import TutorialScreen from './src/screens/TutorialScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
 import { useSettingsStore } from './src/store/settingsStore';
 import { useGameStore } from './src/store/gameStore';
 import { initSound } from './src/utils/soundManager';
@@ -59,11 +58,10 @@ export default function App() {
             contentStyle: { backgroundColor: '#0D0D0D' },
           }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Home" component={HomeTabs} />
           <Stack.Screen name="Game" component={GameScreen} />
           <Stack.Screen name="Tutorial" component={TutorialScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

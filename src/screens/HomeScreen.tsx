@@ -60,17 +60,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Game')}>
-          <MaterialIcons name="play-circle-filled" size={28} color={COLORS.mochaPeach} />
-          <Text style={[styles.navText, { color: COLORS.mochaPeach }]}>Play Now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Profile')}>
-          <MaterialIcons name="account-circle" size={28} color={COLORS.onSurfaceVariant} />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Keep chip amount available for screen readers and small balances */}
       <View style={styles.hiddenBalance}>
         <Text style={styles.chipAmount}>{formatChips(playerChips)}</Text>
@@ -86,7 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.lg,
-    paddingBottom: 100,
   },
   brandBlock: {
     alignItems: 'center',

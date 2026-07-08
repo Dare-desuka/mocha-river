@@ -49,9 +49,7 @@ export default function ProfileScreen() {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
 
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="menu" size={24} color={COLORS.mochaPeach} />
-        </TouchableOpacity>
+        <View style={styles.headerBtn} />
         <Text style={styles.headerTitle}>Mocha River</Text>
         <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('Settings')}>
           <MaterialIcons name="settings" size={24} color={COLORS.mochaPeach} />
@@ -162,17 +160,7 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Bottom Nav */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Game')}>
-          <MaterialIcons name="play-circle-filled" size={28} color={COLORS.onSurfaceVariant} />
-          <Text style={styles.navText}>Play Now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="account-circle" size={28} color={COLORS.mochaPeach} />
-          <Text style={[styles.navText, { color: COLORS.mochaPeach }]}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+
     </View>
   );
 }

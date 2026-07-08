@@ -8,7 +8,6 @@ import PokerCard from './PokerCard';
 interface Props {
   player: Player;
   isCurrentPlayer: boolean;
-  isDealer: boolean;
   position: 'bottom' | 'left' | 'top' | 'right';
   showCards?: boolean;
   botAction?: string | null;
@@ -17,7 +16,6 @@ interface Props {
 const PlayerSeat: React.FC<Props> = React.memo(({
   player,
   isCurrentPlayer,
-  isDealer,
   position,
   showCards,
   botAction,
@@ -29,13 +27,6 @@ const PlayerSeat: React.FC<Props> = React.memo(({
 
   return (
     <View style={[styles.container, position === 'bottom' && styles.containerBottom, isCurrentPlayer && isActive && styles.active]}>
-      {/* Dealer badge */}
-      {isDealer && (
-        <View style={styles.dealerBadge}>
-          <Text style={styles.dealerText}>D</Text>
-        </View>
-      )}
-
       {/* Avatar */}
       <View style={[styles.avatar, { backgroundColor: avatarColor }, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
         <View style={styles.avatarInner}>
@@ -120,23 +111,7 @@ const styles = StyleSheet.create({
   active: {
     backgroundColor: 'transparent',
   },
-  dealerBadge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: COLORS.mochaPeach,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
-  },
-  dealerText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.surface,
-  },
+
   avatar: {
     width: 48,
     height: 48,

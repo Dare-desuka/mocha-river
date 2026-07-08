@@ -23,7 +23,6 @@ export default function GameScreen() {
     currentBet,
     phase,
     currentPlayerIndex,
-    dealerIndex,
     winner,
     winners,
     winningHand,
@@ -179,7 +178,6 @@ export default function GameScreen() {
             <PlayerSeat
               player={players[2]}
               isCurrentPlayer={currentPlayerIndex === 2}
-              isDealer={dealerIndex === 2}
               position="top"
               showCards={phase === 'showdown'}
               botAction={botActionMessage?.playerIndex === 2 ? botActionMessage.text : null}
@@ -191,7 +189,6 @@ export default function GameScreen() {
             <PlayerSeat
               player={players[1]}
               isCurrentPlayer={currentPlayerIndex === 1}
-              isDealer={dealerIndex === 1}
               position="left"
               showCards={phase === 'showdown'}
               botAction={botActionMessage?.playerIndex === 1 ? botActionMessage.text : null}
@@ -203,7 +200,6 @@ export default function GameScreen() {
             <PlayerSeat
               player={players[3]}
               isCurrentPlayer={currentPlayerIndex === 3}
-              isDealer={dealerIndex === 3}
               position="right"
               showCards={phase === 'showdown'}
               botAction={botActionMessage?.playerIndex === 3 ? botActionMessage.text : null}
@@ -265,7 +261,6 @@ export default function GameScreen() {
           <PlayerSeat
             player={player}
             isCurrentPlayer={currentPlayerIndex === 0}
-            isDealer={dealerIndex === 0}
             position="bottom"
             showCards={true}
           />

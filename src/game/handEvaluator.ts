@@ -1,4 +1,4 @@
-import { Card, Rank, HandRank, HandEvaluation, HAND_RANK_VALUES, SUIT_SYMBOLS, RANK_NAMES } from './types';
+import { Card, Rank, HandRank, HandEvaluation, HAND_RANK_VALUES, RANK_NAMES } from './types';
 import { useSettingsStore } from '../store/settingsStore';
 import { en, id } from '../constants/lang';
 
@@ -152,22 +152,6 @@ export function compareHands(a: HandEvaluation, b: HandEvaluation): number {
   return 0;
 }
 
-export function getHandName(hand: HandEvaluation): string {
-  const names: Record<HandRank, string> = {
-    high_card: 'High Card',
-    one_pair: 'One Pair',
-    two_pair: 'Two Pair',
-    three_of_a_kind: 'Three of a Kind',
-    straight: 'Straight',
-    flush: 'Flush',
-    full_house: 'Full House',
-    four_of_a_kind: 'Four of a Kind',
-    straight_flush: 'Straight Flush',
-    royal_flush: 'Royal Flush',
-  };
-  return names[hand.rank];
-}
-
 const HAND_TRANSLATION_KEYS: Record<HandRank, keyof typeof en> = {
   high_card: 'hand.highCard',
   one_pair: 'hand.onePair',
@@ -187,11 +171,4 @@ export function getHandNameTranslated(hand: HandEvaluation): string {
   return dict[HAND_TRANSLATION_KEYS[hand.rank]];
 }
 
-export function handToString(hand: HandEvaluation, cards: Card[]): string {
-  const name = getHandName(hand);
-  const kickerStr = hand.kickers.filter(k => k > 0).map(k => RANK_NAMES[k as Rank] || `${k}`).join(', ');
-  if (hand.rank === 'high_card') {
-    return `${name} (${kickerStr})`;
-  }
-  return name;
-}
+

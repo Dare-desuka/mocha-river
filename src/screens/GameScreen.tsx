@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES, TABLE_COLORS } from '../constants/theme';
+import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { ActionType, BLIND_LEVELS } from '../game/types';

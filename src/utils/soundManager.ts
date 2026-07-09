@@ -4,7 +4,6 @@ import { useSettingsStore } from '../store/settingsStore';
 const soundFiles: Record<string, Record<string, any>> = {
   classic: {
     deal: require('../../assets/sounds/classic/deal.wav'),
-    chip: require('../../assets/sounds/classic/chip.wav'),
     win: require('../../assets/sounds/classic/win.wav'),
     turn: require('../../assets/sounds/classic/turn.wav'),
     fold: require('../../assets/sounds/classic/fold.wav'),
@@ -15,7 +14,6 @@ const soundFiles: Record<string, Record<string, any>> = {
   },
   arcade: {
     deal: require('../../assets/sounds/arcade/deal.wav'),
-    chip: require('../../assets/sounds/arcade/chip.wav'),
     win: require('../../assets/sounds/arcade/win.wav'),
     turn: require('../../assets/sounds/arcade/turn.wav'),
     fold: require('../../assets/sounds/arcade/fold.wav'),
@@ -26,7 +24,6 @@ const soundFiles: Record<string, Record<string, any>> = {
   },
   muted: {
     deal: require('../../assets/sounds/muted/deal.wav'),
-    chip: require('../../assets/sounds/muted/chip.wav'),
     win: require('../../assets/sounds/muted/win.wav'),
     turn: require('../../assets/sounds/muted/turn.wav'),
     fold: require('../../assets/sounds/muted/fold.wav'),

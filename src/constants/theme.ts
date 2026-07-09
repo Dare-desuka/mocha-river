@@ -66,12 +66,11 @@ export const SPACING = {
   lg: 24,
   xl: 32,
   xxl: 48,
-  gutter: 16,
+
 };
 
 export const BORDER_RADIUS = {
   sm: 4,
-  DEFAULT: 8,
   md: 12,
   lg: 16,
   xl: 24,
@@ -89,12 +88,7 @@ export interface TextStyle {
 }
 
 export const TYPOGRAPHY: Record<string, TextStyle> = {
-  displayLg: { fontFamily: FONT_FAMILY, fontSize: 48, fontWeight: '700', lineHeight: 56, letterSpacing: -1 },
-  headlineLg: { fontFamily: FONT_FAMILY, fontSize: 32, fontWeight: '700', lineHeight: 40 },
-  headlineMd: { fontFamily: FONT_FAMILY, fontSize: 24, fontWeight: '600', lineHeight: 32 },
   headlineSm: { fontFamily: FONT_FAMILY, fontSize: 20, fontWeight: '600', lineHeight: 28 },
-  bodyLg: { fontFamily: FONT_FAMILY, fontSize: 18, fontWeight: '400', lineHeight: 26 },
-  bodyMd: { fontFamily: FONT_FAMILY, fontSize: 16, fontWeight: '400', lineHeight: 24 },
   bodySm: { fontFamily: FONT_FAMILY, fontSize: 14, fontWeight: '400', lineHeight: 20 },
   labelLg: { fontFamily: FONT_FAMILY, fontSize: 14, fontWeight: '600', lineHeight: 20, letterSpacing: 1 },
   labelMd: { fontFamily: FONT_FAMILY, fontSize: 12, fontWeight: '600', lineHeight: 16, letterSpacing: 1 },
@@ -102,11 +96,9 @@ export const TYPOGRAPHY: Record<string, TextStyle> = {
 };
 
 export const TABLE_THEMES = [
-  { id: 'classic', name: 'Classic Green', bg: '#242437', border: '#171827', felt: '#313244', label: '10/20' },
-  { id: 'royal', name: 'Royal Blue', bg: '#1a2744', border: '#0f1a33', felt: '#243357', label: '15/30' },
-  { id: 'midnight', name: 'Midnight Purple', bg: '#241835', border: '#1a1128', felt: '#302244', label: '25/50' },
-  { id: 'crimson', name: 'Crimson', bg: '#2e1414', border: '#210e0e', felt: '#3b1a1a', label: '50/100' },
-  { id: 'emerald', name: 'Emerald', bg: '#14281e', border: '#0d1d15', felt: '#1a3327', label: '100/200' },
+  { id: 'classic', bg: '#242437', border: '#171827', felt: '#313244', label: '10/20' },
+  { id: 'royal', bg: '#1a2744', border: '#0f1a33', felt: '#243357', label: '15/30' },
+  { id: 'midnight', bg: '#241835', border: '#1a1128', felt: '#302244', label: '25/50' },
+  { id: 'crimson', bg: '#2e1414', border: '#210e0e', felt: '#3b1a1a', label: '50/100' },
+  { id: 'emerald', bg: '#14281e', border: '#0d1d15', felt: '#1a3327', label: '100/200' },
 ];
-
-export const TABLE_COLORS = TABLE_THEMES[0];

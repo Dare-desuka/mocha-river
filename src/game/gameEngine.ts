@@ -1,6 +1,6 @@
 import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, BLIND_LEVELS, BLIND_INTERVAL, STARTING_CHIPS, HandEvaluation, PotAward } from './types';
 import { getDeck, shuffleDeck, dealCards } from './deck';
-import { evaluateBestHand, compareHands, getHandName, getHandNameTranslated } from './handEvaluator';
+import { evaluateBestHand, compareHands, getHandNameTranslated } from './handEvaluator';
 import { makeBotDecision } from './botAI';
 import { useSettingsStore } from '../store/settingsStore';
 import { t } from '../utils/i18n';

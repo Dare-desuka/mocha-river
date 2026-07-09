@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts, Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { MaterialIcons } from '@expo/vector-icons';
-import { View, Text, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, ImageBackground, StatusBar, Platform } from 'react-native';
 
 import HomeTabs from './src/screens/HomeTabs';
 import GameScreen from './src/screens/GameScreen';
@@ -51,6 +51,7 @@ export default function App() {
   return (
     <ErrorBoundary>
     <SafeAreaProvider>
+      <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
       <ImageBackground source={require('./assets/splash-icon.png')} style={{ flex: 1 }} resizeMode="cover">
         <NavigationContainer>
           <Stack.Navigator

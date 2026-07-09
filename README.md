@@ -18,6 +18,13 @@ Scan QR dengan Expo Go, atau tekan `a` untuk Android emulator.
 
 ## Build APK
 
+### Local (perlu Android SDK)
+```bash
+ANDROID_HOME=$HOME/Android/Sdk ./gradlew assembleRelease
+```
+Output: `android/app/build/outputs/apk/release/Mocha-River-v3.1.1-release.apk`
+
+### EAS Cloud
 ```bash
 npx eas build --platform android --profile preview
 ```
@@ -92,7 +99,7 @@ src/
 - **Profile** — custom photo (image picker) + editable name
 - **Hand history** — review detail setiap hand setelah showdown
 - **Card flip animation** — spring animation tiap deal
-- **Splash background** — semua halaman pakai splash-icon.png
+- **Splash background** — semua halaman pakai splash-icon.png, fullscreen via expo-splash-screen
 - **Chip logo MR** — Mocha River chip icon di seat & pot
 - **Info label** — hand # & blinds di atas bot top
 - **Dealer badge** — lingkaran hitam "D" di avatar dealer
@@ -101,10 +108,12 @@ src/
 - **Blind increase** — naik tiap 6 hand (10/20 → 200/400)
 - **Starting chips** 1000
 - **Haptic feedback** — vibration on actions
+- **Background music** — BGM via expo-audio, plays during gameplay only
+- **Custom avatars** — 7 pixel art cat avatars for player/bots
 
 ## Tech Stack
 
 React Native 0.81 · Expo SDK 54 · TypeScript · Zustand · AsyncStorage
-React Navigation · expo-av · expo-font · expo-image-picker
-expo-linear-gradient · @expo/vector-icons · @expo-google-fonts/montserrat
+React Navigation · expo-audio · expo-font · expo-image-picker · expo-splash-screen
+@expo/vector-icons · @expo-google-fonts/montserrat
 react-native-safe-area-context · react-native-screens

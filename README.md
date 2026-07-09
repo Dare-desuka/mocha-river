@@ -70,12 +70,13 @@ Menang dengan memiliki kartu terbaik saat **Showdown**, atau membuat semua lawan
 
 ```
 src/
-  components/   — PokerCard, PlayerSeat, RaiseSlider, GameStatusBanner, ShowdownModal
+  components/   — PokerCard, PlayerSeat, RaiseSlider, GameStatusBanner, ShowdownModal, HandHistoryModal
   screens/      — Home, Game, Tutorial, Settings, Profile
   game/         — deck, handEvaluator, botAI, gameEngine, types
   store/        — gameStore, settingsStore (Zustand)
-  utils/        — storage, format, soundManager, i18n
+  utils/        — storage, format, soundManager, haptics, i18n
   constants/    — theme (Catppuccin Mocha), lang (EN/ID)
+  __tests__/    — handEvaluator, gameEngine
 ```
 
 ## Fitur
@@ -83,21 +84,23 @@ src/
 - **i18n** — EN/ID, 120+ key, toggle di Settings
 - **Tutorial** — 7 basics + 10 hand rankings, full translated
 - **Table themes** — Classic Green, Royal Blue, Midnight Purple, Crimson, Emerald
-- **Card backs** — Classic, Diamond, Royal (CSS-only)
-- **Sound packs** — Classic, Arcade, Muted (synthesized WAV, 9 suara per pack)
-- **Bot difficulty** — Easy / Medium / Hard (aggression & mistakes)
-- **Raise slider** — preset 5+/10+/20+/100+/1000+ + draggable
+- **Card backs** — Classic, Diamond, Royal (CSS-only design)
+- **Sound packs** — Classic, Arcade, Muted (9 suara per pack: deal/chip/win/turn/fold/check/call/raise/all-in)
+- **Bot difficulty** — Easy / Medium / Hard (aggression & mistake rate)
+- **Raise slider** — draggable + preset 5+/10+/20+/100+/1000+
 - **Stats tracking** — hands played, win rate, biggest win (persisted)
 - **Profile** — custom photo (image picker) + editable name
-- **Splash background** — semua halaman pakai splash-icon.png
-- **Chip logo MR** — Mocha River chip icon di semua seat & pot
-- **Dealer badge** — lingkaran hitam "D" di avatar dealer
 - **Hand history** — review detail setiap hand setelah showdown
-- **Card flip animation** — spring animation pada deal
-- **Kartu render View+Text** (tanpa image), ukuran 56×80 / 48×64
-- **Hand evaluator** C(7,5) — semua 10 ranking + wheel straight
-- **Chip balance persist** di AsyncStorage
-- **Dark theme Catppuccin Mocha**, Montserrat font
+- **Card flip animation** — spring animation tiap deal
+- **Splash background** — semua halaman pakai splash-icon.png
+- **Chip logo MR** — Mocha River chip icon di seat & pot
+- **Info label** — hand # & blinds di atas bot top
+- **Dealer badge** — lingkaran hitam "D" di avatar dealer
+- **Side pot** otomatis untuk all-in multi pemain
+- **Hand evaluator** C(7,5) — 10 ranking + wheel straight
+- **Blind increase** — naik tiap 6 hand (10/20 → 200/400)
+- **Starting chips** 1000
+- **Haptic feedback** — vibration on actions
 
 ## Tech Stack
 

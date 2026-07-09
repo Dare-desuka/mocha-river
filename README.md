@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/icon.png" width="120" height="120" alt="Mocha River">
+</div>
+
 # Mocha River
 
 Offline Texas Hold'em Poker — 1 pemain vs 3 bot. React Native + Expo.

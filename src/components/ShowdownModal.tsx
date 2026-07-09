@@ -3,8 +3,9 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Animated }
 import { Player, HandEvaluation, PotAward } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
-import { getHandName } from '../game/handEvaluator';
+import { getHandNameTranslated } from '../game/handEvaluator';
 import PokerCard from './PokerCard';
+import { useT } from '../utils/i18n';
 
 interface Props {
   visible: boolean;
@@ -29,6 +30,7 @@ const ShowdownModal: React.FC<Props> = ({
   onContinue,
   onQuit,
 }) => {
+  const t = useT();
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const winnerIndexes = new Set((winners.length > 0 ? winners : winner ? [winner] : []).map(p => p.index));
@@ -61,7 +63,7 @@ const ShowdownModal: React.FC<Props> = ({
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <Animated.Text style={[styles.winnerLabel, { transform: [{ scale: pulseAnim }] }]}>
-            {winnerIndexes.size > 1 ? 'WINNERS' : 'WINNER'}
+            {winnerIndexes.size > 1 ? t('showdown.winners') : t('showdown.winner')}
           </Animated.Text>
 
           {winnerIndexes.size > 0 && (
@@ -72,7 +74,7 @@ const ShowdownModal: React.FC<Props> = ({
 
           {winningHand && (
             <View style={styles.handBadge}>
-              <Text style={styles.handText}>{getHandName(winningHand)}</Text>
+              <Text style={styles.handText}>{getHandNameTranslated(winningHand)}</Text>
             </View>
           )}
 
@@ -82,7 +84,7 @@ const ShowdownModal: React.FC<Props> = ({
 
           {communityCards.length > 0 && (
             <View style={styles.boardSection}>
-              <Text style={styles.boardLabel}>Community Cards</Text>
+              <Text style={styles.boardLabel}>{t('showdown.community')}</Text>
               <View style={styles.boardCards}>
                 {communityCards.map((card, i) => (
                   <PokerCard key={`${card.rank}-${card.suit}-${i}`} card={card} small />
@@ -108,7 +110,7 @@ const ShowdownModal: React.FC<Props> = ({
                   <View style={styles.playerInfo}>
                     <Text style={[styles.playerName, isWinner && styles.winnerNameText, !isWinner && styles.loserNameText]}>
                       {player.name}
-                      {!player.isBot ? ' (You)' : ''}
+                      {!player.isBot ? t('showdown.you') : ''}
                     </Text>
                   </View>
                   <Text style={[styles.playerChips, !isWinner && styles.noWinnings]}>
@@ -126,10 +128,10 @@ const ShowdownModal: React.FC<Props> = ({
 
           <View style={styles.footerRow}>
             <TouchableOpacity style={styles.continueBtn} onPress={handleContinue} activeOpacity={0.8}>
-              <Text style={styles.continueBtnText}>Continue</Text>
+              <Text style={styles.continueBtnText}>{t('showdown.continue')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
-              <Text style={styles.quitBtnText}>Quit</Text>
+              <Text style={styles.quitBtnText}>{t('showdown.quit')}</Text>
             </TouchableOpacity>
           </View>
         </View>

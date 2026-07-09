@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
+import { useT } from '../utils/i18n';
 
 interface GlassCardProps {
   icon: string;
@@ -29,16 +30,14 @@ interface RankCardProps {
   name: string;
   desc: string;
   cards: { rank: string; suit: string; red?: boolean }[];
-  isTop?: boolean;
-  faded?: boolean;
 }
 
-function RankCard({ name, desc, cards, isTop, faded }: RankCardProps) {
+function RankCard({ name, desc, cards }: RankCardProps) {
   return (
-    <View style={[styles.rankCard, isTop && styles.rankCardTop, faded && styles.rankCardFaded]}>
+    <View style={styles.rankCard}>
       <View style={styles.rankContent}>
         <View style={styles.rankInfo}>
-          <Text style={[styles.rankName, isTop && styles.rankNameTop]}>{name}</Text>
+          <Text style={styles.rankName}>{name}</Text>
           <Text style={styles.rankDesc}>{desc}</Text>
         </View>
         <View style={styles.miniCards}>
@@ -57,41 +56,58 @@ function RankCard({ name, desc, cards, isTop, faded }: RankCardProps) {
 
 export default function TutorialScreen() {
   const navigation = useNavigation();
+  const t = useT();
 
   return (
-    <LinearGradient colors={['#0a1a0a', '#111318', '#111318']} style={styles.container}>
+    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={24} color={COLORS.tertiary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tutorial</Text>
+        <Text style={styles.headerTitle}>{t('tutorial.title')}</Text>
         <View style={styles.backBtn} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Basics Section */}
-        <Text style={styles.sectionTitle}>TEXAS HOLD'EM BASICS</Text>
+        <Text style={styles.sectionTitle}>{t('tutorial.basics')}</Text>
 
-        <GlassCard icon="🎴" title="1. The Setup">
-          Every player is dealt two private cards, known as 'hole cards'. These belong exclusively to the player.
+        <GlassCard icon="🃏" title={t('tutorial.setup')}>
+          {t('tutorial.setup.desc')}
         </GlassCard>
 
-        <GlassCard icon="🃏" title="2. Community Cards">
-          Five community cards are dealt face up on the table in three stages: The Flop (3 cards), The Turn (1 card), and The River (1 card).
+        <GlassCard icon="🃏" title={t('tutorial.community')}>
+          {t('tutorial.community.desc')}
         </GlassCard>
 
-        <GlassCard icon="🏆" title="3. The Goal">
-          Make the best five-card poker hand using any combination of your two hole cards and the five community cards.
+        <GlassCard icon="🏆" title={t('tutorial.goal')}>
+          {t('tutorial.goal.desc')}
+        </GlassCard>
+
+        <GlassCard icon="🔄" title={t('tutorial.rounds')}>
+          {t('tutorial.rounds.desc')}
+        </GlassCard>
+
+        <GlassCard icon="👆" title={t('tutorial.actions')}>
+          {t('tutorial.actions.desc')}
+        </GlassCard>
+
+        <GlassCard icon="💰" title={t('tutorial.winning')}>
+          {t('tutorial.winning.desc')}
+        </GlassCard>
+
+        <GlassCard icon="🎲" title={t('tutorial.blinds')}>
+          {t('tutorial.blinds.desc')}
         </GlassCard>
 
         {/* Hand Rankings */}
-        <Text style={styles.sectionTitle}>HAND RANKINGS</Text>
-        <Text style={styles.sectionSubtitle}>Ranked from strongest to weakest.</Text>
+        <Text style={styles.sectionTitle}>{t('tutorial.rankings')}</Text>
+        <Text style={styles.sectionSubtitle}>{t('tutorial.rankings.sub')}</Text>
 
         <RankCard
-          name="Royal Flush"
-          desc="A, K, Q, J, 10, all the same suit."
+          name={t('tutorial.royalFlush')}
+          desc={t('tutorial.royalFlush.desc')}
           cards={[
             { rank: 'A', suit: '♥', red: true },
             { rank: 'K', suit: '♥', red: true },
@@ -99,12 +115,11 @@ export default function TutorialScreen() {
             { rank: 'J', suit: '♥', red: true },
             { rank: '10', suit: '♥', red: true },
           ]}
-          isTop
         />
 
         <RankCard
-          name="Straight Flush"
-          desc="Five cards in sequence, same suit."
+          name={t('tutorial.straightFlush')}
+          desc={t('tutorial.straightFlush.desc')}
           cards={[
             { rank: '8', suit: '♠' },
             { rank: '7', suit: '♠' },
@@ -115,8 +130,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Four of a Kind"
-          desc="All four cards of the same rank."
+          name={t('tutorial.fourKind')}
+          desc={t('tutorial.fourKind.desc')}
           cards={[
             { rank: '9', suit: '♥', red: true },
             { rank: '9', suit: '♦', red: true },
@@ -127,8 +142,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Full House"
-          desc="Three of a kind + One pair."
+          name={t('tutorial.fullHouse')}
+          desc={t('tutorial.fullHouse.desc')}
           cards={[
             { rank: 'J', suit: '♠' },
             { rank: 'J', suit: '♥', red: true },
@@ -139,8 +154,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Flush"
-          desc="Five cards of the same suit."
+          name={t('tutorial.flush')}
+          desc={t('tutorial.flush.desc')}
           cards={[
             { rank: 'A', suit: '♣' },
             { rank: 'Q', suit: '♣' },
@@ -151,8 +166,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Straight"
-          desc="Five cards in sequence."
+          name={t('tutorial.straight')}
+          desc={t('tutorial.straight.desc')}
           cards={[
             { rank: '10', suit: '♠' },
             { rank: '9', suit: '♥', red: true },
@@ -163,8 +178,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Three of a Kind"
-          desc="Three cards of same rank."
+          name={t('tutorial.threeKind')}
+          desc={t('tutorial.threeKind.desc')}
           cards={[
             { rank: '7', suit: '♥', red: true },
             { rank: '7', suit: '♦', red: true },
@@ -175,8 +190,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="Two Pair"
-          desc="Two different pairs."
+          name={t('tutorial.twoPair')}
+          desc={t('tutorial.twoPair.desc')}
           cards={[
             { rank: 'Q', suit: '♠' },
             { rank: 'Q', suit: '♥', red: true },
@@ -187,8 +202,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="One Pair"
-          desc="Two cards of same rank."
+          name={t('tutorial.onePair')}
+          desc={t('tutorial.onePair.desc')}
           cards={[
             { rank: 'A', suit: '♥', red: true },
             { rank: 'A', suit: '♦', red: true },
@@ -199,8 +214,8 @@ export default function TutorialScreen() {
         />
 
         <RankCard
-          name="High Card"
-          desc="Highest card plays."
+          name={t('tutorial.highCard')}
+          desc={t('tutorial.highCard.desc')}
           cards={[
             { rank: 'A', suit: '♥', red: true },
             { rank: 'J', suit: '♠' },
@@ -208,12 +223,11 @@ export default function TutorialScreen() {
             { rank: '5', suit: '♣' },
             { rank: '2', suit: '♥', red: true },
           ]}
-          faded
         />
 
         <View style={{ height: 40 }} />
       </ScrollView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
@@ -265,12 +279,12 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   glassCard: {
-    backgroundColor: 'rgba(49, 51, 53, 0.7)',
+    backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.tertiary,
+    borderColor: COLORS.outline,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -300,19 +314,12 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   rankCard: {
-    backgroundColor: 'rgba(49, 51, 53, 0.7)',
+    backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.outlineVariant,
-  },
-  rankCardTop: {
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.tertiary,
-  },
-  rankCardFaded: {
-    opacity: 0.6,
+    borderColor: COLORS.outline,
   },
   rankContent: {
     flexDirection: 'row',
@@ -328,9 +335,6 @@ const styles = StyleSheet.create({
     color: COLORS.onSurface,
     marginBottom: 2,
   },
-  rankNameTop: {
-    color: COLORS.tertiary,
-  },
   rankDesc: {
     fontSize: 12,
     color: COLORS.onSurfaceVariant,
@@ -340,17 +344,19 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   miniCard: {
-    backgroundColor: COLORS.surfaceLow,
+    backgroundColor: '#cdd6f4',
     borderRadius: BORDER_RADIUS.sm,
-    borderWidth: 1,
-    borderColor: COLORS.outlineVariant,
+    borderWidth: 0.5,
+    borderColor: '#b0b8cf',
     width: 36,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   miniRank: {
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '800',
+    fontFamily: 'monospace',
   },
 });

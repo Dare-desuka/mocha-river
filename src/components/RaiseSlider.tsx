@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder, LayoutChangeEvent } from 'react-native';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
+import { useT } from '../utils/i18n';
 
 interface Props {
   min: number;
@@ -12,26 +13,18 @@ interface Props {
 }
 
 const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) => {
+  const t = useT();
   const [selected, setSelected] = useState(min);
   const trackWidth = useRef(1);
   const thumbPos = useRef(0);
 
-  const getPresetLabel = (amt: number) => {
-    if (amt === max) return 'ALL IN';
-    return formatChips(amt);
+  const getPresetLabel = (amt: string) => amt;
+  const presetsList = ['5+', '10+', '20+', '100+', '1000+'];
+
+  const applyPreset = (label: string) => {
+    const add = parseInt(label);
+    setSelected(Math.min(max, selected + add));
   };
-  const presetCount = 4;
-  const pStep = Math.max(1, Math.round((max - min) / (presetCount - 1)));
-  const presetsList: { label: string; amount: number }[] = [];
-  for (let i = 0; i < presetCount; i++) {
-    const amt = Math.min(min + pStep * i, max);
-    if (!presetsList.find(p => p.amount === amt)) {
-      presetsList.push({ label: getPresetLabel(amt), amount: amt });
-    }
-  }
-  if (!presetsList.find(p => p.amount === max)) {
-    presetsList.push({ label: getPresetLabel(max), amount: max });
-  }
 
   const raiseFromPosition = useCallback((positionX: number) => {
     const ratio = Math.max(0, Math.min(1, positionX / (trackWidth.current || 1)));
@@ -65,7 +58,7 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Raise By</Text>
+      <Text style={styles.title}>{t('slider.raiseBy')}</Text>
       <View style={styles.amountRow}>
         <TouchableOpacity style={styles.stepBtn} onPress={dec} activeOpacity={0.6}>
           <Text style={styles.stepBtnText}>-</Text>
@@ -78,7 +71,7 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
 
       {/* Draggable slider */}
       <View style={styles.sliderSection}>
-        <Text style={styles.sliderEndLabel}>MIN</Text>
+        <Text style={styles.sliderEndLabel}>{t('game.min')}</Text>
         <View
           style={styles.sliderTrack}
           onLayout={onTrackLayout}
@@ -88,31 +81,29 @@ const RaiseSlider: React.FC<Props> = ({ min, max, pot, onConfirm, onCancel }) =>
           <View style={[styles.sliderThumb, { left: `${fillRatio * 100}%` }]} />
         </View>
         <TouchableOpacity onPress={() => setSelected(max)}>
-          <Text style={styles.sliderEndLabel}>MAX</Text>
+          <Text style={styles.sliderEndLabel}>{t('game.max')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Quick raise amounts */}
       <View style={styles.presets}>
-        {presetsList.map((p) => (
+        {presetsList.map((label) => (
           <TouchableOpacity
-            key={p.label}
-            style={[styles.presetBtn, selected === p.amount && styles.presetActive]}
-            onPress={() => setSelected(p.amount)}
+            key={label}
+            style={styles.presetBtn}
+            onPress={() => applyPreset(label)}
           >
-            <Text style={[styles.presetText, selected === p.amount && styles.presetTextActive]}>
-              {p.label}
-            </Text>
+            <Text style={styles.presetText}>{label}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={styles.cancelText}>{t('slider.cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.confirmBtn} onPress={() => onConfirm(selected)}>
-          <Text style={styles.confirmText}>Raise</Text>
+          <Text style={styles.confirmText}>{t('slider.raise')}</Text>
         </TouchableOpacity>
       </View>
     </View>

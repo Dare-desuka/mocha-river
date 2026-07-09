@@ -1,38 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Phase, BLIND_LEVELS } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
 
 interface Props {
-  phase: Phase;
   pot: number;
-  handCount: number;
-  blindLevel: number;
-  level: number;
 }
 
-const GameStatusBanner: React.FC<Props> = React.memo(({ phase, pot, handCount, level }) => {
-  const phaseLabels: Record<Phase, string> = {
-    idle: 'Press Deal to Start',
-    preflop: 'Pre-Flop',
-    flop: 'Flop',
-    turn: 'Turn',
-    river: 'River',
-    showdown: 'Showdown!',
-  };
-
-  const blind = BLIND_LEVELS[level] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
-
+const GameStatusBanner: React.FC<Props> = React.memo(({ pot }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.inner}>
-        <View style={styles.potSection}>
-          <Text style={styles.potLabel}>Total Pot</Text>
-          <Text style={styles.potAmount}>{formatChips(pot)}</Text>
-        </View>
-        <Text style={styles.phase}>{phaseLabels[phase]} · Hand #{handCount} · Blinds {blind.small}/{blind.big}</Text>
+      <View style={styles.chipIcon}>
+        <View style={styles.chipIconInner} />
+        <Text style={styles.chipIconText}>MR</Text>
       </View>
+      <Text style={styles.potAmount}>{formatChips(pot)}</Text>
     </View>
   );
 });
@@ -43,34 +25,44 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.full,
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-  },
-  inner: {
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.xs,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  potSection: {
+  chipIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#e8e8e8',
+    justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#c0c0c0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 2,
   },
-  potLabel: {
-    fontSize: 9,
-    color: COLORS.primary,
-    fontWeight: '600',
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
+  chipIconInner: {
+    position: 'absolute',
+    top: 3, left: 3, right: 3, bottom: 3,
+    borderRadius: 11,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.15)',
+  },
+  chipIconText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#555',
+    letterSpacing: 0.5,
   },
   potAmount: {
     fontSize: 24,
     fontWeight: '700',
     color: COLORS.primary,
-  },
-  phase: {
-    marginTop: 2,
-    fontSize: 10,
-    fontWeight: '600',
-    color: COLORS.onSurfaceVariant,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
   },
 });
 

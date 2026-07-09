@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts, Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
+import { MaterialIcons } from '@expo/vector-icons';
 import { View, Text, ScrollView } from 'react-native';
 
 import HomeTabs from './src/screens/HomeTabs';
@@ -35,7 +36,7 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Er
 }
 
 export default function App() {
-  const [fontsLoaded] = useFonts({ Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular });
+  const [fontsLoaded] = useFonts({ Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular, ...MaterialIcons.font });
 
   useEffect(() => {
     useSettingsStore.getState().load().then(() => {

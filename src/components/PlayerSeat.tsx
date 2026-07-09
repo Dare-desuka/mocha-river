@@ -3,11 +3,13 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { Player } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
+import { useT } from '../utils/i18n';
 import PokerCard from './PokerCard';
 
 interface Props {
   player: Player;
   isCurrentPlayer: boolean;
+  isDealer: boolean;
   position: 'bottom' | 'left' | 'top' | 'right';
   showCards?: boolean;
   botAction?: string | null;
@@ -17,11 +19,13 @@ interface Props {
 const PlayerSeat: React.FC<Props> = React.memo(({
   player,
   isCurrentPlayer,
+  isDealer,
   position,
   showCards,
   botAction,
   avatarUri,
 }) => {
+  const t = useT();
   const isActive = !player.folded && !player.isAllIn;
   const initials = player.isBot ? player.name.replace('Bot ', '').slice(0, 1) : (player.name[0] || 'P');
   const avatarColors = ['#2a2024', '#182034', '#2a251d', '#241f30'];
@@ -49,6 +53,13 @@ const PlayerSeat: React.FC<Props> = React.memo(({
         <View style={styles.avatarHighlight} />
       </View>
 
+      {/* Dealer button */}
+      {isDealer && (
+        <View style={styles.dealerBadge}>
+          <Text style={styles.dealerText}>D</Text>
+        </View>
+      )}
+
       {/* Name */}
       {position !== 'bottom' && <Text style={styles.name} numberOfLines={1}>{player.name}</Text>}
 
@@ -70,29 +81,14 @@ const PlayerSeat: React.FC<Props> = React.memo(({
         </View>
       )}
 
-      {/* Current-turn label */}
-      {isCurrentPlayer && isActive && (
-        <Text style={[styles.turnText, position === 'bottom' && styles.turnTextBottom]}>
-          {position === 'bottom' ? 'YOUR TURN' : 'TURN'}
-        </Text>
-      )}
-
       {/* Chip count */}
       <View style={styles.chipBadge}>
-        <Text style={styles.chipIcon}>$</Text>
+        <View style={styles.chipIcon}>
+          <View style={styles.chipIconInner} />
+          <Text style={styles.chipIconText}>MR</Text>
+        </View>
         <Text style={styles.chipText}>{formatChips(player.chips)}</Text>
       </View>
-
-      {/* Current bet */}
-      {player.currentBet > 0 && (
-        <View style={styles.betBadge}>
-          <Text style={styles.betText}>{formatChips(player.currentBet)}</Text>
-        </View>
-      )}
-
-      {/* Status indicators */}
-      {player.isAllIn && <Text style={styles.statusText}>ALL IN</Text>}
-      {player.folded && <Text style={styles.foldedText}>Folded</Text>}
 
       {/* Hole cards (bots only at bottom) */}
       {position !== 'bottom' && (showCards || !player.isBot) && player.holeCards.length === 2 && (
@@ -126,6 +122,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 
+  dealerBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#111',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    borderWidth: 1.5,
+    borderColor: '#555',
+  },
+  dealerText: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 13,
+  },
   avatar: {
     width: 48,
     height: 48,
@@ -191,19 +208,35 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.full,
     borderWidth: 1,
     borderColor: 'rgba(141,145,155,0.45)',
-    gap: 5,
+    gap: 6,
   },
   chipIcon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#e8e8e8',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: COLORS.primary,
-    color: COLORS.primary,
-    textAlign: 'center',
-    fontSize: 10,
-    lineHeight: 14,
-    fontWeight: '800',
+    borderColor: '#c0c0c0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 2,
+  },
+  chipIconInner: {
+    position: 'absolute',
+    top: 2, left: 2, right: 2, bottom: 2,
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.15)',
+  },
+  chipIconText: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: '#555',
+    letterSpacing: 0.5,
   },
   chipText: {
     fontSize: 12,

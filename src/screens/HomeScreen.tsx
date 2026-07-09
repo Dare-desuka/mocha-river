@@ -1,30 +1,29 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { formatChips } from '../utils/format';
+import { useT } from '../utils/i18n';
 
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
   const players = useGameStore(s => s.players);
   const playerChips = players[0]?.chips || 0;
+  const t = useT();
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
-
-      <View style={styles.brandBlock}>
-          <Text style={styles.title}>MOCHA RIVER</Text>
-      </View>
 
       <View style={styles.bankrollPill}>
         <View style={styles.coinIcon}>
-          <Text style={styles.coinIconText}>$</Text>
+          <View style={styles.coinIconInner} />
+          <Text style={styles.coinIconText}>MR</Text>
         </View>
         <View>
-          <Text style={styles.chipLabel}>BANKROLL</Text>
+          <Text style={styles.chipLabel}>{t('home.bankroll')}</Text>
           <Text style={styles.chipAmount}>{formatChips(playerChips)}</Text>
         </View>
       </View>
@@ -36,7 +35,7 @@ export default function HomeScreen() {
           activeOpacity={0.82}
         >
           <MaterialIcons name="play-arrow" size={30} color={COLORS.surface} />
-          <Text style={styles.playBtnText}>Play Offline</Text>
+          <Text style={styles.playBtnText}>{t('home.play')}</Text>
         </TouchableOpacity>
 
         <View style={styles.secondaryRow}>
@@ -46,7 +45,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <MaterialIcons name="school" size={24} color={COLORS.onSurfaceVariant} />
-            <Text style={styles.secondaryBtnText}>Tutorial</Text>
+            <Text style={styles.secondaryBtnText}>{t('home.tutorial')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -55,7 +54,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <MaterialIcons name="settings" size={24} color={COLORS.onSurfaceVariant} />
-            <Text style={styles.secondaryBtnText}>Settings</Text>
+            <Text style={styles.secondaryBtnText}>{t('home.settings')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -64,7 +63,7 @@ export default function HomeScreen() {
       <View style={styles.hiddenBalance}>
         <Text style={styles.chipAmount}>{formatChips(playerChips)}</Text>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -117,15 +116,29 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    borderWidth: 3,
-    borderColor: COLORS.mochaPeach,
+    backgroundColor: '#e8e8e8',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#c0c0c0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 2,
+  },
+  coinIconInner: {
+    position: 'absolute',
+    top: 4, left: 4, right: 4, bottom: 4,
+    borderRadius: 14,
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.15)',
   },
   coinIconText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: COLORS.mochaPeach,
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#555',
+    letterSpacing: 0.5,
   },
   menu: {
     width: '100%',
@@ -158,7 +171,7 @@ const styles = StyleSheet.create({
     gap: SPACING.md,
   },
   secondaryBtn: {
-    backgroundColor: 'rgba(24,24,37,0.45)',
+    backgroundColor: COLORS.surface,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.lg,
     borderRadius: BORDER_RADIUS.md,

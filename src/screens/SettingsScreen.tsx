@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Switch, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Switch, ScrollView, StatusBar, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES } from '../constants/theme';
 import { useSettingsStore } from '../store/settingsStore';
 import { useGameStore } from '../store/gameStore';
 import { STARTING_CHIPS, BotDifficulty } from '../game/types';
+import { useT } from '../utils/i18n';
 
 export default function SettingsScreen() {
+  const t = useT();
   const navigation = useNavigation();
   const { settings, update } = useSettingsStore();
   const { resetChips, setDifficulty } = useGameStore();
@@ -22,25 +24,25 @@ export default function SettingsScreen() {
   };
 
   const difficultyOptions: { key: BotDifficulty; label: string; desc: string }[] = [
-    { key: 'easy', label: 'Easy', desc: 'Bots make mistakes' },
-    { key: 'medium', label: 'Medium', desc: 'Balanced play' },
-    { key: 'hard', label: 'Hard', desc: 'Tight-aggressive' },
+    { key: 'easy', label: t('settings.easy'), desc: t('settings.easy.desc') },
+    { key: 'medium', label: t('settings.medium'), desc: t('settings.medium.desc') },
+    { key: 'hard', label: t('settings.hard'), desc: t('settings.hard.desc') },
   ];
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode='cover'>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
       <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={24} color={COLORS.primaryContainer} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('settings.title')}</Text>
         <View style={styles.backBtn} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Game Preferences */}
-        <Text style={styles.sectionTitle}>GAME PREFERENCES</Text>
+        <Text style={styles.sectionTitle}>{t('settings.preferences')}</Text>
         <View style={styles.sectionCard}>
           {/* Sound */}
           <View style={styles.settingRow}>
@@ -49,8 +51,8 @@ export default function SettingsScreen() {
                 <MaterialIcons name="volume-up" size={18} color={COLORS.primaryContainer} />
               </View>
               <View>
-                <Text style={styles.settingLabel}>Sound Effects</Text>
-                <Text style={styles.settingDesc}>Chips clinking, card shuffling</Text>
+                <Text style={styles.settingLabel}>{t('settings.sound')}</Text>
+                <Text style={styles.settingDesc}>{t('settings.sound.desc')}</Text>
               </View>
             </View>
             <Switch
@@ -70,8 +72,8 @@ export default function SettingsScreen() {
                 <MaterialIcons name="vibration" size={18} color={COLORS.primaryContainer} />
               </View>
               <View>
-                <Text style={styles.settingLabel}>Haptic Feedback</Text>
-                <Text style={styles.settingDesc}>Vibrate on your turn</Text>
+                <Text style={styles.settingLabel}>{t('settings.haptic')}</Text>
+                <Text style={styles.settingDesc}>{t('settings.haptic.desc')}</Text>
               </View>
             </View>
             <Switch
@@ -84,7 +86,7 @@ export default function SettingsScreen() {
         </View>
 
         {/* Bot Difficulty */}
-        <Text style={styles.sectionTitle}>BOT DIFFICULTY</Text>
+        <Text style={styles.sectionTitle}>{t('settings.botDiff')}</Text>
         <View style={styles.sectionCard}>
           {difficultyOptions.map(opt => (
             <TouchableOpacity
@@ -111,27 +113,27 @@ export default function SettingsScreen() {
         </View>
 
         {/* Table Theme */}
-        <Text style={styles.sectionTitle}>TABLE THEME</Text>
+        <Text style={styles.sectionTitle}>{t('settings.tableTheme')}</Text>
         <View style={styles.sectionCard}>
-          {TABLE_THEMES.map(t => (
+          {TABLE_THEMES.map(theme => (
             <TouchableOpacity
-              key={t.id}
+              key={theme.id}
               style={[
                 styles.themeRow,
-                settings.tableTheme === t.id && styles.themeRowActive,
+                settings.tableTheme === theme.id && styles.themeRowActive,
               ]}
-              onPress={() => update({ tableTheme: t.id })}
+              onPress={() => update({ tableTheme: theme.id })}
               activeOpacity={0.7}
             >
-              <View style={[styles.themeSwatch, { backgroundColor: t.bg, borderColor: t.border }]} />
+              <View style={[styles.themeSwatch, { backgroundColor: theme.bg, borderColor: theme.border }]} />
               <View style={styles.themeInfo}>
                 <Text style={[
                   styles.themeLabel,
-                  settings.tableTheme === t.id && styles.themeLabelActive,
-                ]}>{t.name}</Text>
-                <Text style={styles.themeDesc}>Blind {t.label}</Text>
+                  settings.tableTheme === theme.id && styles.themeLabelActive,
+                ]}>{t('settings.theme.' + theme.id)}</Text>
+                <Text style={styles.themeDesc}>{t('settings.blind').replace('{label}', theme.label)}</Text>
               </View>
-              {settings.tableTheme === t.id && (
+              {settings.tableTheme === theme.id && (
                 <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
               )}
             </TouchableOpacity>
@@ -139,12 +141,12 @@ export default function SettingsScreen() {
         </View>
 
         {/* Card Back */}
-        <Text style={styles.sectionTitle}>CARD BACK</Text>
+        <Text style={styles.sectionTitle}>{t('settings.cardBack')}</Text>
         <View style={styles.sectionCard}>
           {[
-            { key: 'classic', label: 'Classic', desc: 'Cross-hatch pattern' },
-            { key: 'diamond', label: 'Diamond', desc: 'Rotating diamond' },
-            { key: 'royal', label: 'Royal', desc: 'Concentric frames' },
+            { key: 'classic', label: t('settings.card.classic'), desc: t('settings.card.classic.desc') },
+            { key: 'diamond', label: t('settings.card.diamond'), desc: t('settings.card.diamond.desc') },
+            { key: 'royal', label: t('settings.card.royal'), desc: t('settings.card.royal.desc') },
           ].map(opt => (
             <TouchableOpacity
               key={opt.key}
@@ -164,12 +166,12 @@ export default function SettingsScreen() {
         </View>
 
         {/* Sound Pack */}
-        <Text style={styles.sectionTitle}>SOUND PACK</Text>
+        <Text style={styles.sectionTitle}>{t('settings.soundPack')}</Text>
         <View style={styles.sectionCard}>
           {[
-            { key: 'classic', label: 'Classic', desc: 'Original sound effects' },
-            { key: 'arcade', label: 'Arcade', desc: 'Higher-pitched tones' },
-            { key: 'muted', label: 'Muted', desc: 'Softer, lower tones' },
+            { key: 'classic', label: t('settings.pack.classic'), desc: t('settings.pack.classic.desc') },
+            { key: 'arcade', label: t('settings.pack.arcade'), desc: t('settings.pack.arcade.desc') },
+            { key: 'muted', label: t('settings.pack.muted'), desc: t('settings.pack.muted.desc') },
           ].map(opt => (
             <TouchableOpacity
               key={opt.key}
@@ -188,24 +190,48 @@ export default function SettingsScreen() {
           ))}
         </View>
 
+        {/* Language */}
+        <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
+        <View style={styles.sectionCard}>
+          {[
+            { key: 'en' as const, label: t('settings.lang.en'), desc: 'English' },
+            { key: 'id' as const, label: t('settings.lang.id'), desc: 'Bahasa Indonesia' },
+          ].map(opt => (
+            <TouchableOpacity
+              key={opt.key}
+              style={[styles.selectorRow, settings.language === opt.key && styles.selectorRowActive]}
+              onPress={() => update({ language: opt.key })}
+              activeOpacity={0.7}
+            >
+              <View style={styles.selectorInfo}>
+                <Text style={[styles.selectorLabel, settings.language === opt.key && styles.selectorLabelActive]}>{opt.label}</Text>
+                <Text style={styles.selectorDesc}>{opt.desc}</Text>
+              </View>
+              {settings.language === opt.key && (
+                <MaterialIcons name="check-circle" size={20} color={COLORS.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
         {/* Danger Zone */}
-        <Text style={[styles.sectionTitle, { color: COLORS.mochaRed }]}>DANGER ZONE</Text>
+        <Text style={[styles.sectionTitle, { color: COLORS.mochaRed }]}>{t('settings.danger')}</Text>
         <View style={[styles.sectionCard, { borderColor: 'rgba(243, 139, 168, 0.2)' }]}>
-          <Text style={styles.dangerTitle}>Reset Account</Text>
-          <Text style={styles.dangerDesc}>This will reset your chip balance to the starting amount ({STARTING_CHIPS}).</Text>
+          <Text style={styles.dangerTitle}>{t('settings.reset')}</Text>
+          <Text style={styles.dangerDesc}>{t('settings.reset.desc').replace('{chips}', String(STARTING_CHIPS))}</Text>
           <TouchableOpacity
             style={styles.resetBtn}
             onPress={handleReset}
             activeOpacity={0.7}
           >
             <MaterialIcons name="restart-alt" size={16} color={COLORS.mochaRed} />
-            <Text style={styles.resetBtnText}>  Reset Chip Balance</Text>
+            <Text style={styles.resetBtnText}>{'  ' + t('settings.resetBtn')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 }
 

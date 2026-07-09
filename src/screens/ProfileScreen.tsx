@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, TextInput, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, TextInput, Image, Alert, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,8 +7,10 @@ import { COLORS, BORDER_RADIUS, SPACING, TYPOGRAPHY } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { formatChips } from '../utils/format';
 import { loadStats, loadProfile, saveProfile, Stats, ProfileData } from '../utils/storage';
+import { useT } from '../utils/i18n';
 
 export default function ProfileScreen() {
+  const t = useT();
   const navigation = useNavigation<any>();
   const players = useGameStore(s => s.players);
   const handCount = useGameStore(s => s.handCount);
@@ -45,12 +47,12 @@ export default function ProfileScreen() {
   }, [profile]);
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
       <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
 
       <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <View style={styles.headerBtn} />
-        <Text style={styles.headerTitle}>Mocha River</Text>
+        <Text style={styles.headerTitle}>{t('app.title')}</Text>
         <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('Settings')}>
           <MaterialIcons name="settings" size={24} color={COLORS.mochaPeach} />
         </TouchableOpacity>
@@ -67,7 +69,7 @@ export default function ProfileScreen() {
                 <Text style={styles.avatarText}>
                   {profile.name ? profile.name[0].toUpperCase() : 'A'}
                 </Text>
-              </View>
+</View>
             )}
             <View style={styles.cameraBadge}>
               <MaterialIcons name="camera-alt" size={14} color={COLORS.surface} />
@@ -91,9 +93,9 @@ export default function ProfileScreen() {
           )}
           <View style={styles.badgeRow}>
             <View style={styles.vipBadge}>
-              <Text style={styles.vipText}>VIP</Text>
+              <Text style={styles.vipText}>{t('profile.vip')}</Text>
             </View>
-            <Text style={styles.levelText}>Lv. 1</Text>
+            <Text style={styles.levelText}>{t('profile.level')}</Text>
           </View>
         </View>
 
@@ -102,14 +104,14 @@ export default function ProfileScreen() {
           <View style={styles.statCard}>
             <View style={styles.statHeader}>
               <MaterialIcons name="casino" size={16} color={COLORS.mochaPeach} />
-              <Text style={styles.statLabel}>Total Hands</Text>
+              <Text style={styles.statLabel}>{t('profile.totalHands')}</Text>
             </View>
             <Text style={styles.statValue}>{handCount}</Text>
           </View>
           <View style={styles.statCard}>
             <View style={styles.statHeader}>
               <MaterialIcons name="trending-up" size={16} color={COLORS.mochaPeach} />
-              <Text style={styles.statLabel}>Win Rate</Text>
+              <Text style={styles.statLabel}>{t('profile.winRate')}</Text>
             </View>
             <Text style={styles.statValue}>
               {stats.totalHands > 0
@@ -120,7 +122,7 @@ export default function ProfileScreen() {
           <View style={[styles.statCard, styles.statCardWide]}>
             <View style={styles.statHeader}>
               <MaterialIcons name="star" size={16} color={COLORS.mochaPeach} />
-              <Text style={styles.statLabel}>Biggest Win</Text>
+              <Text style={styles.statLabel}>{t('profile.biggestWin')}</Text>
             </View>
             <Text style={styles.statValue}>{stats.biggestWin > 0 ? formatChips(stats.biggestWin) : '--'}</Text>
           </View>
@@ -132,18 +134,18 @@ export default function ProfileScreen() {
             <MaterialIcons name="tune" size={18} color={COLORS.onSurfaceVariant} />
           </View>
           <View style={styles.settingsCtaText}>
-            <Text style={styles.settingsCtaTitle}>Account Settings</Text>
-            <Text style={styles.settingsCtaDesc}>Security, preferences, and billing</Text>
+            <Text style={styles.settingsCtaTitle}>{t('profile.account')}</Text>
+            <Text style={styles.settingsCtaDesc}>{t('profile.account.desc')}</Text>
           </View>
           <Text style={styles.settingsCtaArrow}>›</Text>
         </TouchableOpacity>
 
         {/* Session stats */}
-        <Text style={styles.sectionTitle}>SESSION</Text>
+        <Text style={styles.sectionTitle}>{t('profile.session')}</Text>
         <View style={styles.matchList}>
           <View style={styles.matchRow}>
             <View style={styles.matchInfo}>
-              <Text style={styles.matchGame}>Hands Played</Text>
+              <Text style={styles.matchGame}>{t('profile.handsPlayed')}</Text>
             </View>
             <View style={styles.matchResult}>
               <Text style={[styles.matchAmount, { color: COLORS.onSurface }]}>{stats.totalHands}</Text>
@@ -151,17 +153,17 @@ export default function ProfileScreen() {
           </View>
           <View style={styles.matchRow}>
             <View style={styles.matchInfo}>
-              <Text style={styles.matchGame}>Hands Won</Text>
+              <Text style={styles.matchGame}>{t('profile.handsWon')}</Text>
             </View>
             <View style={styles.matchResult}>
               <Text style={[styles.matchAmount, { color: COLORS.onSurface }]}>{stats.handsWon}</Text>
             </View>
           </View>
         </View>
-      </ScrollView>
+        </ScrollView>
 
 
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -257,6 +259,13 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.headlineLgMobile,
     color: COLORS.onSurface,
     marginBottom: SPACING.xs,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    borderColor: COLORS.outline,
+    backgroundColor: COLORS.surface,
+    overflow: 'hidden',
   },
   badgeRow: {
     flexDirection: 'row',
@@ -266,7 +275,7 @@ const styles = StyleSheet.create({
   vipBadge: {
     paddingHorizontal: SPACING.sm,
     paddingVertical: 2,
-    backgroundColor: COLORS.surfaceHigh,
+    backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.sm,
     borderWidth: 1,
     borderColor: COLORS.tertiary,
@@ -280,6 +289,13 @@ const styles = StyleSheet.create({
   levelText: {
     ...TYPOGRAPHY.bodySm,
     color: COLORS.onSurfaceVariant,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    borderColor: COLORS.outline,
+    backgroundColor: COLORS.surface,
+    overflow: 'hidden',
   },
   statsGrid: {
     flexDirection: 'row',

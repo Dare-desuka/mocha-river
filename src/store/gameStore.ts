@@ -124,7 +124,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ ...newState, botActions: { ...state.botActions } });
 
     vibrate(30);
-    playSound('chip');
+    playSound(action);
 
     if (
       !newState.isPlayerTurn &&

@@ -1,7 +1,11 @@
 import { GameState, Player, Card, Phase, ActionType, BLIND_AMOUNTS, BLIND_LEVELS, BLIND_INTERVAL, STARTING_CHIPS, HandEvaluation, PotAward } from './types';
 import { getDeck, shuffleDeck, dealCards } from './deck';
-import { evaluateBestHand, compareHands, getHandName } from './handEvaluator';
+import { evaluateBestHand, compareHands, getHandName, getHandNameTranslated } from './handEvaluator';
 import { makeBotDecision } from './botAI';
+import { useSettingsStore } from '../store/settingsStore';
+import { t } from '../utils/i18n';
+
+const getLang = () => useSettingsStore.getState().settings.language;
 
 function getNextActivePlayer(players: Player[], startIndex: number): number {
   const count = players.length;
@@ -161,7 +165,11 @@ export function startNewHand(state: GameState): GameState {
   newState.winners = [];
   newState.winningHand = null;
   newState.potAwards = [];
-  newState.actionLog = [`Hand #${newState.handCount} started`, `${newState.players[sbIdx].name} posts SB (${smallBlind})`, `${newState.players[bbIdx].name} posts BB (${bigBlind})`];
+  newState.actionLog = [
+    t('action.handStart', getLang()).replace('{n}', String(newState.handCount)),
+    t('action.postSB', getLang()).replace('{player}', newState.players[sbIdx].name).replace('{amount}', String(smallBlind)),
+    t('action.postBB', getLang()).replace('{player}', newState.players[bbIdx].name).replace('{amount}', String(bigBlind)),
+  ];
 
   const firstPlayerIdx = (bbIdx + 1) % playerCount;
   newState.currentPlayerIndex = getNextActivePlayer(newState.players, firstPlayerIdx);
@@ -180,19 +188,19 @@ function advancePhase(state: GameState): GameState {
     const { community, remaining } = dealCommunityCards(newState.deck, 'flop', newState.communityCards);
     newState.communityCards = community;
     newState.deck = remaining;
-    newState.actionLog = [...newState.actionLog, '--- Flop ---'];
+    newState.actionLog = [...newState.actionLog, t('action.flop', getLang())];
   } else if (newState.phase === 'flop') {
     newState.phase = 'turn';
     const { community, remaining } = dealCommunityCards(newState.deck, 'turn', newState.communityCards);
     newState.communityCards = community;
     newState.deck = remaining;
-    newState.actionLog = [...newState.actionLog, '--- Turn ---'];
+    newState.actionLog = [...newState.actionLog, t('action.turn', getLang())];
   } else if (newState.phase === 'turn') {
     newState.phase = 'river';
     const { community, remaining } = dealCommunityCards(newState.deck, 'river', newState.communityCards);
     newState.communityCards = community;
     newState.deck = remaining;
-    newState.actionLog = [...newState.actionLog, '--- River ---'];
+    newState.actionLog = [...newState.actionLog, t('action.river', getLang())];
   } else {
     newState.phase = 'showdown';
     return doShowdown(newState);
@@ -281,12 +289,15 @@ function applyPotAwards(state: GameState): GameState {
 
   const winners = Array.from(allWinners.values());
   const winnerNames = winners.map(p => p.name).join(', ');
-  const handName = overallBestHand ? getHandName(overallBestHand) : 'unknown hand';
+  const handName = overallBestHand ? getHandNameTranslated(overallBestHand) : 'unknown hand';
   newState.winner = winners[0] ?? null;
   newState.winners = winners;
   newState.winningHand = overallBestHand;
   newState.potAwards = awards;
-  newState.actionLog = [...newState.actionLog, winners.length > 1 ? `${winnerNames} split pots with ${handName}` : `${winnerNames || 'No winner'} wins with ${handName}`];
+  newState.actionLog = [...newState.actionLog, winners.length > 1
+    ? t('action.split', getLang()).replace('{winners}', winnerNames).replace('{hand}', handName)
+    : t('action.wins', getLang()).replace('{winner}', winnerNames || 'No winner').replace('{hand}', handName)
+  ];
   newState.pot = 0;
   newState.isPlayerTurn = false;
   return newState;
@@ -304,7 +315,7 @@ function awardPotToLastMan(state: GameState): GameState {
     const payout = newState.pot;
     newState.winningHand = null;
     newState.potAwards = payout > 0 ? [{ amount: payout, winnerIndexes: [winner.index] }] : [];
-    newState.actionLog = [...newState.actionLog, `${winner.name} wins (everyone else folded)`];
+    newState.actionLog = [...newState.actionLog, t('action.winsFold', getLang()).replace('{winner}', winner.name)];
     newState.players = newState.players.map(p =>
       p.index === winner.index ? { ...p, chips: p.chips + newState.pot } : p
     );
@@ -330,7 +341,7 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
   switch (actionType) {
     case 'fold': {
       player.folded = true;
-      newState.actionLog = [...newState.actionLog, `${player.name} folds`];
+      newState.actionLog = [...newState.actionLog, t('action.folds', getLang()).replace('{player}', player.name)];
       newState.roundActionsSinceLastRaise += 1;
       const afterFold = awardPotToLastMan(newState);
       if (afterFold.phase === 'showdown') return afterFold;
@@ -338,7 +349,7 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
     }
     case 'check': {
       if (player.currentBet < newState.currentBet) return state;
-      newState.actionLog = [...newState.actionLog, `${player.name} checks`];
+      newState.actionLog = [...newState.actionLog, t('action.checks', getLang()).replace('{player}', player.name)];
       newState.roundActionsSinceLastRaise += 1;
       break;
     }
@@ -348,7 +359,7 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
       player.totalBet += callAmount;
       newState.pot += callAmount;
       if (player.chips === 0) player.isAllIn = true;
-      newState.actionLog = [...newState.actionLog, `${player.name} calls (${callAmount})`];
+      newState.actionLog = [...newState.actionLog, t('action.calls', getLang()).replace('{player}', player.name).replace('{amount}', String(callAmount))];
       newState.roundActionsSinceLastRaise += 1;
       break;
     }
@@ -374,7 +385,10 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
         newState.roundActionsSinceLastRaise += 1;
       }
       if (player.chips === 0) player.isAllIn = true;
-      newState.actionLog = [...newState.actionLog, player.isAllIn ? `${player.name} raises all-in to ${player.currentBet}` : `${player.name} raises to ${player.currentBet}`];
+      newState.actionLog = [...newState.actionLog, player.isAllIn
+        ? t('action.raisesAllIn', getLang()).replace('{player}', player.name).replace('{amount}', String(player.currentBet))
+        : t('action.raises', getLang()).replace('{player}', player.name).replace('{amount}', String(player.currentBet))
+      ];
       break;
     }
     case 'all_in': {
@@ -397,7 +411,7 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
       }
       player.chips = 0;
       player.isAllIn = true;
-      newState.actionLog = [...newState.actionLog, `${player.name} goes all-in (${allInAmount})`];
+      newState.actionLog = [...newState.actionLog, t('action.goesAllIn', getLang()).replace('{player}', player.name).replace('{amount}', String(allInAmount))];
       break;
     }
   }
@@ -416,12 +430,13 @@ export function handleAction(state: GameState, actionType: ActionType, raiseAmou
 }
 
 function formatBotActionText(state: GameState, player: Player, actionType: ActionType, amount: number): string {
+  const l = getLang();
   switch (actionType) {
-    case 'fold': return 'FOLD';
-    case 'check': return 'CHECK';
-    case 'call': return `CALL ${amount}`;
-    case 'raise': return `RAISE ${amount}`;
-    case 'all_in': return `ALL-IN ${amount}`;
+    case 'fold': return t('bot.fold', l);
+    case 'check': return t('bot.check', l);
+    case 'call': return t('bot.call', l).replace('{amount}', String(amount));
+    case 'raise': return t('bot.raise', l).replace('{amount}', String(amount));
+    case 'all_in': return t('bot.allIn', l).replace('{amount}', String(amount));
   }
 }
 

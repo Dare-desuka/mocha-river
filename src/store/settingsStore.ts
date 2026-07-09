@@ -16,6 +16,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     tableTheme: 'classic',
     cardBack: 'classic',
     soundPack: 'classic',
+    language: 'en',
   },
 
   load: async () => {

@@ -41,6 +41,7 @@ export interface Settings {
   tableTheme: string;
   cardBack: 'classic' | 'diamond' | 'royal';
   soundPack: 'classic' | 'arcade' | 'muted';
+  language: 'en' | 'id';
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -50,6 +51,7 @@ const DEFAULT_SETTINGS: Settings = {
   tableTheme: 'classic',
   cardBack: 'classic',
   soundPack: 'classic',
+  language: 'en',
 };
 
 export async function saveSettings(settings: Settings): Promise<void> {

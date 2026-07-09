@@ -5,9 +5,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES, TABLE_COLORS } from '../constants/theme';
 import { useGameStore } from '../store/gameStore';
 import { useSettingsStore } from '../store/settingsStore';
-import { ActionType } from '../game/types';
+import { ActionType, BLIND_LEVELS } from '../game/types';
 import { formatChips } from '../utils/format';
 import { loadProfile } from '../utils/storage';
+import { useT } from '../utils/i18n';
 import PokerCard from '../components/PokerCard';
 import PlayerSeat from '../components/PlayerSeat';
 import GameStatusBanner from '../components/GameStatusBanner';
@@ -24,6 +25,7 @@ export default function GameScreen() {
     currentBet,
     phase,
     currentPlayerIndex,
+    dealerIndex,
     winner,
     winners,
     winningHand,
@@ -40,6 +42,7 @@ export default function GameScreen() {
     resetGame,
   } = useGameStore();
   const settings = useSettingsStore(s => s.settings);
+  const t = useT();
 
   const tableTheme = TABLE_THEMES.find(t => t.id === settings.tableTheme) || TABLE_THEMES[0];
 
@@ -50,11 +53,15 @@ export default function GameScreen() {
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   const player = players[0];
+  const activePlayers = players.filter(p => !p.folded).length;
   const playerBet = player?.currentBet || 0;
   const callAmount = Math.min(Math.max(currentBet - playerBet, 0), player?.chips || 0);
   const canCheck = currentBet <= playerBet;
   const chipsAfterCall = Math.max((player?.chips || 0) - callAmount, 0);
   const canRaise = chipsAfterCall >= minRaise;
+  const canAllIn = (player?.chips || 0) > 0;
+
+  const blind = BLIND_LEVELS[blindLevel] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
 
   useEffect(() => {
     startHand();
@@ -113,12 +120,12 @@ export default function GameScreen() {
   const actionBar = phase !== 'showdown' && phase !== 'idle' ? (
     <View style={styles.actionBar}>
       <View style={styles.sliderRow}>
-        <Text style={[styles.sliderLabel, !isPlayerTurn && styles.disabledText]}>MIN</Text>
+        <Text style={[styles.sliderLabel, !isPlayerTurn && styles.disabledText]}>{t('game.min')}</Text>
         <View style={styles.sliderTrackStatic}>
           <View style={[styles.sliderFillStatic, { width: `${Math.min(100, Math.max(0, (currentBet / 200) * 100))}%` }]} />
         </View>
         <TouchableOpacity onPress={() => handleAction('all_in')} disabled={!isPlayerTurn}>
-          <Text style={[styles.sliderLabel, !isPlayerTurn && styles.disabledText]}>MAX</Text>
+          <Text style={[styles.sliderLabel, !isPlayerTurn && styles.disabledText]}>{t('game.max')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.actionRow}>
@@ -128,7 +135,7 @@ export default function GameScreen() {
           disabled={!isPlayerTurn}
           activeOpacity={0.75}
         >
-          <Text style={[styles.betButtonText, { color: COLORS.onSurface }]}>Fold</Text>
+          <Text style={[styles.betButtonText, { color: COLORS.onSurface }]}>{t('game.fold')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -139,7 +146,7 @@ export default function GameScreen() {
           disabled={!isPlayerTurn}
           activeOpacity={0.75}
         >
-          <Text style={styles.betButtonText}>{canCheck ? 'Check' : 'Call'}</Text>
+          <Text style={styles.betButtonText}>{canCheck ? t('game.check') : t('game.call')}</Text>
           {!canCheck && <Text style={styles.betButtonSub}>{formatChips(callAmount)}</Text>}
         </TouchableOpacity>
         <TouchableOpacity
@@ -148,7 +155,16 @@ export default function GameScreen() {
           disabled={!isPlayerTurn || !canRaise}
           activeOpacity={0.75}
         >
-          <Text style={styles.raiseButtonText}>Raise</Text>
+          <Text style={styles.raiseButtonText}>{t('game.raise')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.allInButton, (!isPlayerTurn || !canAllIn) && styles.disabled]}
+          onPress={() => handleAction('all_in')}
+          disabled={!isPlayerTurn || !canAllIn}
+          activeOpacity={0.75}
+        >
+          <Text style={styles.allInButtonText}>{t('game.allIn')}</Text>
+          <Text style={styles.allInButtonSub}>{formatChips(player?.chips || 0)}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -163,7 +179,7 @@ export default function GameScreen() {
         <TouchableOpacity style={styles.headerIconBtn} onPress={handleBack}>
           <MaterialIcons name="arrow-back" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>
-          <Text style={styles.headerTitle}>Mocha River</Text>
+          <Text style={styles.headerTitle}>{t('app.title')}</Text>
         <TouchableOpacity style={styles.headerIconBtn} onPress={() => navigation.navigate('Settings')}>
           <MaterialIcons name="settings" size={28} color={COLORS.onSurfaceVariant} />
         </TouchableOpacity>
@@ -171,39 +187,47 @@ export default function GameScreen() {
 
       {/* Game area */}
       <View style={styles.gameArea}>
-        {/* Oval table */}
         <View style={[styles.tableOval, { borderColor: tableTheme.border }]}>
           <View style={[styles.tableGradientOuter, { backgroundColor: tableTheme.bg }]}>
             <View style={[styles.tableGradientMid, { backgroundColor: tableTheme.felt }]} />
             <View style={[styles.tableGradientInner, { backgroundColor: tableTheme.felt }]} />
           </View>
+
+          {/* Info label above bot top */}
+          <View style={styles.infoLabel}>
+            <Text style={styles.infoLabelText}>
+              {t('game.hand')} #{handCount} · {blind.small}/{blind.big}
+            </Text>
+          </View>
+
           {/* Bot Top */}
           <View style={styles.botTop}>
             <PlayerSeat
               player={players[2]}
               isCurrentPlayer={currentPlayerIndex === 2}
+              isDealer={dealerIndex === 2}
               position="top"
               showCards={phase === 'showdown'}
               botAction={botActions[2] ?? null}
             />
           </View>
-
           {/* Bot Left */}
           <View style={styles.botLeft}>
             <PlayerSeat
               player={players[1]}
               isCurrentPlayer={currentPlayerIndex === 1}
+              isDealer={dealerIndex === 1}
               position="left"
               showCards={phase === 'showdown'}
               botAction={botActions[1] ?? null}
             />
           </View>
-
           {/* Bot Right */}
           <View style={styles.botRight}>
             <PlayerSeat
               player={players[3]}
               isCurrentPlayer={currentPlayerIndex === 3}
+              isDealer={dealerIndex === 3}
               position="right"
               showCards={phase === 'showdown'}
               botAction={botActions[3] ?? null}
@@ -212,11 +236,8 @@ export default function GameScreen() {
 
           {/* Table center content */}
           <View style={styles.tableCenter}>
-            {/* Community cards with centered text behind */}
             <View style={styles.communityWrapper}>
-              <View style={styles.statusBannerWrap}>
-                <GameStatusBanner phase={phase} pot={pot} handCount={handCount} blindLevel={blindLevel} level={blindLevel} />
-              </View>
+              <GameStatusBanner pot={pot} />
               <View style={styles.communityArea}>
                 <View style={styles.communityRow}>
                   {[0, 1, 2].map(i => (
@@ -241,17 +262,18 @@ export default function GameScreen() {
               </View>
             </View>
           </View>
-        </View>
 
-        {/* Player seat below table */}
-        <View style={styles.playerBottom}>
-          <PlayerSeat
-            player={player}
-            isCurrentPlayer={currentPlayerIndex === 0}
-            position="bottom"
-            showCards={true}
-            avatarUri={avatarUri}
-          />
+          {/* Player seat below table */}
+          <View style={styles.playerBottom}>
+            <PlayerSeat
+              player={player}
+              isCurrentPlayer={currentPlayerIndex === 0}
+              isDealer={dealerIndex === 0}
+              position="bottom"
+              showCards={true}
+              avatarUri={avatarUri}
+            />
+          </View>
         </View>
       </View>
 
@@ -259,13 +281,13 @@ export default function GameScreen() {
       {phase === 'showdown' && !gameOver ? null : phase === 'showdown' && gameOver ? (
         <View style={styles.actionBar}>
           <TouchableOpacity style={styles.continueBtn} onPress={handleDeal} activeOpacity={0.8}>
-            <Text style={styles.continueBtnText}>Deal</Text>
+            <Text style={styles.continueBtnText}>{t('game.deal')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.historyBtn} onPress={() => setShowHistory(true)} activeOpacity={0.7}>
-            <Text style={styles.historyBtnText}>History</Text>
+            <Text style={styles.historyBtnText}>{t('game.history')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quitBtn} onPress={handleQuit} activeOpacity={0.7}>
-            <Text style={styles.quitBtnText}>Quit</Text>
+            <Text style={styles.quitBtnText}>{t('game.quit')}</Text>
           </TouchableOpacity>
         </View>
       ) : actionBar}
@@ -314,14 +336,14 @@ export default function GameScreen() {
       {showLeaveModal && (
         <View style={styles.leaveOverlay}>
           <View style={styles.leaveModal}>
-            <Text style={styles.leaveTitle}>Leave Game?</Text>
-            <Text style={styles.leaveDesc}>Your current hand will be lost.</Text>
+            <Text style={styles.leaveTitle}>{t('game.leaveTitle')}</Text>
+            <Text style={styles.leaveDesc}>{t('game.leaveDesc')}</Text>
             <View style={styles.leaveButtons}>
               <TouchableOpacity style={styles.leaveStayBtn} onPress={cancelLeave} activeOpacity={0.7}>
-                <Text style={styles.leaveStayText}>Stay</Text>
+                <Text style={styles.leaveStayText}>{t('game.stay')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.leaveConfirmBtn} onPress={confirmLeave} activeOpacity={0.7}>
-                <Text style={styles.leaveConfirmText}>Leave</Text>
+                <Text style={styles.leaveConfirmText}>{t('game.leave')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -366,13 +388,13 @@ const styles = StyleSheet.create({
   },
   tableOval: {
     width: '90%',
-    maxWidth: 370,
+    maxWidth: 340,
     aspectRatio: 4 / 5,
     borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'relative',
     overflow: 'visible',
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
@@ -404,21 +426,38 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(49,50,68,0.3)',
   },
   tableCenter: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: SPACING.sm,
     paddingHorizontal: SPACING.md,
   },
   botTop: {
     position: 'absolute',
-    top: -28,
+    top: -40,
     left: 0,
     right: 0,
     alignItems: 'center',
     zIndex: 5,
   },
+  infoLabel: {
+    position: 'absolute',
+    top: -68,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 6,
+  },
+  infoLabelText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.onSurfaceVariant,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
   botLeft: {
     position: 'absolute',
-    left: -48,
+    left: -20,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -426,7 +465,7 @@ const styles = StyleSheet.create({
   },
   botRight: {
     position: 'absolute',
-    right: -48,
+    right: -20,
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -436,7 +475,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    minHeight: 140,
+    paddingTop: 100,
   },
   communityArea: {
     alignItems: 'center',
@@ -464,16 +503,14 @@ const styles = StyleSheet.create({
     borderColor: COLORS.outlineVariant,
     borderStyle: 'dashed',
   },
-  statusBannerWrap: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 0,
-  },
   playerBottom: {
-    marginTop: SPACING.lg,
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
     alignItems: 'center',
+    marginTop: -36,
+    zIndex: 5,
   },
   actionBar: {
     paddingHorizontal: SPACING.md,
@@ -564,6 +601,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.onPrimaryContainer,
+  },
+  allInButton: {
+    flex: 1.2,
+    minHeight: 74,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: 'rgba(243,139,168,0.2)',
+    borderWidth: 1.5,
+    borderColor: COLORS.mochaRed,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  allInButtonText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: COLORS.mochaRed,
+  },
+  allInButtonSub: {
+    marginTop: 2,
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.mochaRed,
   },
   disabled: {
     opacity: 0.35,

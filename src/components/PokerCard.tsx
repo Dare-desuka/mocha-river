@@ -36,6 +36,8 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
     outputRange: ['90deg', '0deg'],
   });
 
+  const cr = small ? 6 : 8;
+
   const frontOpacity = flipAnim.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0, 1],
@@ -49,7 +51,9 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
   if (hidden) {
     return (
       <View style={[styles.card, styles.cardBack, small && styles.cardSmall]}>
-        <BackDesign small={small} />
+        <View style={[styles.backOverlay, { borderRadius: cr }]}>
+          <BackDesign small={small} />
+        </View>
       </View>
     );
   }
@@ -60,10 +64,10 @@ const PokerCard: React.FC<Props> = React.memo(({ card, hidden, small, flipped: s
 
   return (
     <View style={[styles.card, small && styles.cardSmall]}>
-      <Animated.View style={[styles.backOverlay, { opacity: backOpacity }]}>
+      <Animated.View style={[styles.backOverlay, { borderRadius: cr, opacity: backOpacity }]}>
         <BackDesign small={small} />
       </Animated.View>
-      <Animated.View style={[styles.front, { opacity: frontOpacity }]}>
+      <Animated.View style={[styles.front, { borderRadius: cr, opacity: frontOpacity }]}>
         <View style={styles.cornerTop}>
           <Text style={[styles.rank, small && styles.rankSmall, { color: suitColor }]}>{rankName}</Text>
           <Text style={[styles.suitCorner, small && styles.suitCornerSmall, { color: suitColor }]}>{suitSymbol}</Text>
@@ -140,6 +144,7 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: '#cdd6f4',
     borderRadius: 8,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -164,9 +169,8 @@ const styles = StyleSheet.create({
   backOverlay: {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    zIndex: 2,
-    borderRadius: 8,
     overflow: 'hidden',
+    zIndex: 2,
   },
   backPattern: {
     flex: 1,
@@ -325,6 +329,8 @@ const styles = StyleSheet.create({
   },
   front: {
     ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+    backgroundColor: '#cdd6f4',
     zIndex: 1,
   },
   cornerTop: {

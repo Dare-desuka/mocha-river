@@ -1,4 +1,6 @@
 import { Card, Rank, HandRank, HandEvaluation, HAND_RANK_VALUES, SUIT_SYMBOLS, RANK_NAMES } from './types';
+import { useSettingsStore } from '../store/settingsStore';
+import { en, id } from '../constants/lang';
 
 function sortByRank(cards: Card[]): Card[] {
   return [...cards].sort((a, b) => b.rank - a.rank);
@@ -164,6 +166,25 @@ export function getHandName(hand: HandEvaluation): string {
     royal_flush: 'Royal Flush',
   };
   return names[hand.rank];
+}
+
+const HAND_TRANSLATION_KEYS: Record<HandRank, keyof typeof en> = {
+  high_card: 'hand.highCard',
+  one_pair: 'hand.onePair',
+  two_pair: 'hand.twoPair',
+  three_of_a_kind: 'hand.threeKind',
+  straight: 'hand.straight',
+  flush: 'hand.flush',
+  full_house: 'hand.fullHouse',
+  four_of_a_kind: 'hand.fourKind',
+  straight_flush: 'hand.straightFlush',
+  royal_flush: 'hand.royalFlush',
+};
+
+export function getHandNameTranslated(hand: HandEvaluation): string {
+  const lang = useSettingsStore.getState().settings.language;
+  const dict = lang === 'id' ? id : en;
+  return dict[HAND_TRANSLATION_KEYS[hand.rank]];
 }
 
 export function handToString(hand: HandEvaluation, cards: Card[]): string {

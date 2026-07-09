@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'rea
 import { Player, HandEvaluation, PotAward, Card, BLIND_LEVELS } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
-import { getHandName } from '../game/handEvaluator';
+import { getHandNameTranslated } from '../game/handEvaluator';
 import { SUIT_SYMBOLS, SUIT_COLORS } from '../game/types';
+import { useT } from '../utils/i18n';
 import PokerCard from './PokerCard';
 
 interface Props {
@@ -24,6 +25,7 @@ const HandHistoryModal: React.FC<Props> = ({
   visible, handCount, blindLevel, communityCards, players,
   winners, winningHand, potAwards, actionLog, onClose,
 }) => {
+  const t = useT();
   const winnerIndexes = new Set(winners.map(p => p.index));
   const blind = BLIND_LEVELS[blindLevel] || BLIND_LEVELS[BLIND_LEVELS.length - 1];
 
@@ -31,12 +33,12 @@ const HandHistoryModal: React.FC<Props> = ({
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <Text style={styles.title}>Hand #{handCount}</Text>
-          <Text style={styles.blindText}>Blinds {blind.small}/{blind.big}</Text>
+          <Text style={styles.title}>{t('history.hand').replace('{n}', String(handCount))}</Text>
+          <Text style={styles.blindText}>{t('history.blinds').replace('{small}', String(blind.small)).replace('{big}', String(blind.big))}</Text>
 
           {communityCards.length > 0 && (
             <View style={styles.boardSection}>
-              <Text style={styles.label}>Community Cards</Text>
+              <Text style={styles.label}>{t('history.community')}</Text>
               <View style={styles.boardCards}>
                 {communityCards.map((card, i) => (
                   <PokerCard key={i} card={card} small />
@@ -47,7 +49,7 @@ const HandHistoryModal: React.FC<Props> = ({
 
           {winningHand && (
             <View style={styles.handBadge}>
-              <Text style={styles.handText}>{getHandName(winningHand)}</Text>
+              <Text style={styles.handText}>{getHandNameTranslated(winningHand)}</Text>
             </View>
           )}
 
@@ -70,7 +72,7 @@ const HandHistoryModal: React.FC<Props> = ({
                   {isWinner ? (
                     <Text style={styles.winAmount}>+{formatChips(winnings)}</Text>
                   ) : (
-                    <Text style={styles.loseText}>{player.folded ? 'Folded' : formatChips(player.chips)}</Text>
+                    <Text style={styles.loseText}>{player.folded ? t('history.folded') : formatChips(player.chips)}</Text>
                   )}
                 </View>
               );
@@ -78,7 +80,7 @@ const HandHistoryModal: React.FC<Props> = ({
           </ScrollView>
 
           <TouchableOpacity style={styles.closeBtn} onPress={onClose} activeOpacity={0.8}>
-            <Text style={styles.closeText}>Close</Text>
+            <Text style={styles.closeText}>{t('history.close')}</Text>
           </TouchableOpacity>
         </View>
       </View>

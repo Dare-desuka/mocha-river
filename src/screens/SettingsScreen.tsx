@@ -7,6 +7,7 @@ import { useSettingsStore } from '../store/settingsStore';
 import { useGameStore } from '../store/gameStore';
 import { STARTING_CHIPS, BotDifficulty } from '../game/types';
 import { useT } from '../utils/i18n';
+import { toggleMusic } from '../utils/soundManager';
 
 export default function SettingsScreen() {
   const t = useT();
@@ -59,6 +60,26 @@ export default function SettingsScreen() {
               onValueChange={v => update({ soundEnabled: v })}
               trackColor={{ false: COLORS.surfaceHighest, true: COLORS.tertiary }}
               thumbColor={settings.soundEnabled ? COLORS.onTertiary : COLORS.outline}
+            />
+          </View>
+
+          <View style={styles.divider} />
+
+          {/* Music */}
+          <View style={styles.settingRow}>
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIcon}>
+                <MaterialIcons name="music-note" size={18} color={COLORS.primaryContainer} />
+              </View>
+              <View>
+                <Text style={styles.settingLabel}>{t('settings.music')}</Text>
+              </View>
+            </View>
+            <Switch
+              value={settings.musicEnabled}
+              onValueChange={v => { update({ musicEnabled: v }); toggleMusic(v); }}
+              trackColor={{ false: COLORS.surfaceHighest, true: COLORS.tertiary }}
+              thumbColor={settings.musicEnabled ? COLORS.onTertiary : COLORS.outline}
             />
           </View>
 

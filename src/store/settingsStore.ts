@@ -11,6 +11,7 @@ interface SettingsStore {
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
   settings: {
     soundEnabled: true,
+    musicEnabled: true,
     vibrationEnabled: true,
     botDifficulty: 'medium',
     tableTheme: 'classic',

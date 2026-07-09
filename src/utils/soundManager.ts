@@ -37,8 +37,11 @@ const soundFiles: Record<string, Record<string, any>> = {
   },
 };
 
+const bgmSource = require('../../assets/sounds/bgm.mp3');
+
 let loaded: Record<string, any> = {};
 let currentPack: string | null = null;
+let bgmPlayer: any = null;
 
 function loadPack(pack: string) {
   if (currentPack === pack && Object.keys(loaded).length > 0) return;
@@ -69,8 +72,31 @@ export async function initSound() {
     await setAudioModeAsync({
       playsInSilentMode: true,
     });
+    bgmPlayer = createAudioPlayer(bgmSource);
+    bgmPlayer.loop = true;
   } catch (e) {
     console.warn('Sound init failed:', e);
+  }
+}
+
+export function startBgm() {
+  if (!bgmPlayer) return;
+  const { musicEnabled } = useSettingsStore.getState().settings;
+  if (musicEnabled) try { bgmPlayer.play(); } catch {}
+}
+
+export function stopBgm() {
+  if (!bgmPlayer) return;
+  try { bgmPlayer.pause(); } catch {}
+}
+
+export function toggleMusic(enable: boolean) {
+  if (!bgmPlayer) return;
+  try {
+    if (enable) bgmPlayer.play();
+    else bgmPlayer.pause();
+  } catch (e) {
+    console.warn('Music toggle failed:', e);
   }
 }
 

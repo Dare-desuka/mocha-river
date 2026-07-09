@@ -9,6 +9,7 @@ import { ActionType, BLIND_LEVELS } from '../game/types';
 import { formatChips } from '../utils/format';
 import { loadProfile } from '../utils/storage';
 import { useT } from '../utils/i18n';
+import { startBgm, stopBgm } from '../utils/soundManager';
 import PokerCard from '../components/PokerCard';
 import PlayerSeat from '../components/PlayerSeat';
 import GameStatusBanner from '../components/GameStatusBanner';
@@ -66,6 +67,8 @@ export default function GameScreen() {
   useEffect(() => {
     startHand();
     loadProfile().then(p => setAvatarUri(p.avatarUri));
+    startBgm();
+    return stopBgm;
   }, []);
 
   const handleAction = useCallback((action: ActionType) => {

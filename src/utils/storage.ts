@@ -36,6 +36,7 @@ export async function loadChipBalance(): Promise<number | null> {
 
 export interface Settings {
   soundEnabled: boolean;
+  musicEnabled: boolean;
   vibrationEnabled: boolean;
   botDifficulty: 'easy' | 'medium' | 'hard';
   tableTheme: string;
@@ -46,6 +47,7 @@ export interface Settings {
 
 const DEFAULT_SETTINGS: Settings = {
   soundEnabled: true,
+  musicEnabled: true,
   vibrationEnabled: true,
   botDifficulty: 'medium',
   tableTheme: 'classic',

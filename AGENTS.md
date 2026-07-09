@@ -72,6 +72,9 @@
 - `android/app/build/outputs/apk/release/Mocha-River-v{version}-release.apk`
 - Debug: 113MB, Release: 70MB (Hermes + PNG crunch, no R8)
 
+## Known Issues
+- **Splash masih kecil, belum fullscreen** — meski sudah install expo-splash-screen + set status bar translucent, native splash (sebelum JS load) masih tampil centered icon. Perlu investigasi lebih lanjut: mungkin perlu custom SplashScreenView atau pendekatan edge-to-edge Android.
+
 ## Future Plan — Multiplayer Online
 - **Real-time Texas Hold'em** via WebSocket + Node.js server
 - **Lobby**: create/join room, minimal 2 players

@@ -1,4 +1,4 @@
-import { Audio } from 'expo-av';
+import { createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { useSettingsStore } from '../store/settingsStore';
 
 const soundFiles: Record<string, Record<string, any>> = {
@@ -37,18 +37,18 @@ const soundFiles: Record<string, Record<string, any>> = {
   },
 };
 
-let loaded: Record<string, Audio.Sound> = {};
+let loaded: Record<string, any> = {};
 let currentPack: string | null = null;
 
-async function loadPack(pack: string) {
+function loadPack(pack: string) {
   if (currentPack === pack && Object.keys(loaded).length > 0) return;
-  await unload();
+  unload();
   const files = soundFiles[pack];
   if (!files) return;
   for (const [key, source] of Object.entries(files)) {
     try {
-      const { sound } = await Audio.Sound.createAsync(source, { shouldPlay: false });
-      loaded[key] = sound;
+      const p = createAudioPlayer(source);
+      loaded[key] = p;
     } catch (e) {
       console.warn('Sound load failed:', key, e);
     }
@@ -56,9 +56,9 @@ async function loadPack(pack: string) {
   currentPack = pack;
 }
 
-async function unload() {
-  for (const s of Object.values(loaded)) {
-    try { await s.unloadAsync(); } catch {}
+function unload() {
+  for (const p of Object.values(loaded)) {
+    try { p.remove(); } catch {}
   }
   loaded = {};
   currentPack = null;
@@ -66,10 +66,8 @@ async function unload() {
 
 export async function initSound() {
   try {
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
+    await setAudioModeAsync({
+      playsInSilentMode: true,
     });
   } catch (e) {
     console.warn('Sound init failed:', e);
@@ -78,13 +76,16 @@ export async function initSound() {
 
 export async function ensureSoundPack() {
   const pack = useSettingsStore.getState().settings.soundPack || 'classic';
-  await loadPack(pack);
+  loadPack(pack);
 }
 
 export async function playSound(name: string) {
   if (!useSettingsStore.getState().settings.soundEnabled) return;
   await ensureSoundPack();
-  const s = loaded[name];
-  if (!s) { console.warn('Sound not loaded:', name); return; }
-  try { await s.replayAsync(); } catch (e) { console.warn('Sound play failed:', e); }
+  const p = loaded[name];
+  if (!p) { console.warn('Sound not loaded:', name); return; }
+  try {
+    p.seekTo(0);
+    p.play();
+  } catch (e) { console.warn('Sound play failed:', e); }
 }

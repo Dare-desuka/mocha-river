@@ -4,6 +4,7 @@ import { Player } from '../game/types';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
 import { formatChips } from '../utils/format';
 import { useT } from '../utils/i18n';
+import { getAvatarByIndex } from '../utils/avatars';
 import PokerCard from './PokerCard';
 
 interface Props {
@@ -27,9 +28,7 @@ const PlayerSeat: React.FC<Props> = React.memo(({
 }) => {
   const t = useT();
   const isActive = !player.folded && !player.isAllIn;
-  const initials = player.isBot ? player.name.replace('Bot ', '').slice(0, 1) : (player.name[0] || 'P');
-  const avatarColors = ['#2a2024', '#182034', '#2a251d', '#241f30'];
-  const avatarColor = avatarColors[player.index % avatarColors.length];
+  const avatarSrc = avatarUri ? { uri: avatarUri } : getAvatarByIndex(player.index);
 
   return (
     <View style={[styles.container, position === 'bottom' && styles.containerBottom, isCurrentPlayer && isActive && styles.active]}>
@@ -42,14 +41,8 @@ const PlayerSeat: React.FC<Props> = React.memo(({
       )}
 
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: avatarUri ? 'transparent' : avatarColor }, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
-        {avatarUri ? (
-          <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
-        ) : (
-          <View style={styles.avatarInner}>
-            <Text style={styles.avatarText}>{initials}</Text>
-          </View>
-        )}
+      <View style={[styles.avatar, isCurrentPlayer && isActive && styles.avatarActiveGlow]}>
+        <Image source={avatarSrc} style={styles.avatarImage} />
         <View style={styles.avatarHighlight} />
       </View>
 

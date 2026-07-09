@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts, Montserrat_700Bold, Montserrat_600SemiBold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { MaterialIcons } from '@expo/vector-icons';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ImageBackground } from 'react-native';
 
 import HomeTabs from './src/screens/HomeTabs';
 import GameScreen from './src/screens/GameScreen';
@@ -51,20 +51,22 @@ export default function App() {
   return (
     <ErrorBoundary>
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            animation: 'slide_from_right',
-            contentStyle: { backgroundColor: '#0D0D0D' },
-          }}
-        >
-          <Stack.Screen name="Home" component={HomeTabs} />
-          <Stack.Screen name="Game" component={GameScreen} />
-          <Stack.Screen name="Tutorial" component={TutorialScreen} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <ImageBackground source={require('./assets/splash-icon.png')} style={{ flex: 1 }} resizeMode="cover">
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              animation: 'slide_from_right',
+              contentStyle: { backgroundColor: 'transparent' },
+            }}
+          >
+            <Stack.Screen name="Home" component={HomeTabs} />
+            <Stack.Screen name="Game" component={GameScreen} />
+            <Stack.Screen name="Tutorial" component={TutorialScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ImageBackground>
     </SafeAreaProvider>
     </ErrorBoundary>
   );

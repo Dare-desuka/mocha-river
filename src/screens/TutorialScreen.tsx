@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -59,8 +59,7 @@ export default function TutorialScreen() {
   const t = useT();
 
   return (
-    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={24} color={COLORS.tertiary} />
@@ -227,14 +226,13 @@ export default function TutorialScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: 'row',

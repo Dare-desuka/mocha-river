@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Switch, ScrollView, StatusBar, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Switch, ScrollView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING, TABLE_THEMES } from '../constants/theme';
@@ -30,8 +30,7 @@ export default function SettingsScreen() {
   ];
 
   return (
-    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode='cover'>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
+    <View style={styles.container}>
       <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialIcons name="arrow-back" size={24} color={COLORS.primaryContainer} />
@@ -231,14 +230,13 @@ export default function SettingsScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: 'row',

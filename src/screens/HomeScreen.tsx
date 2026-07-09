@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, BORDER_RADIUS, SPACING } from '../constants/theme';
@@ -14,9 +14,7 @@ export default function HomeScreen() {
   const t = useT();
 
   return (
-    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
-
+    <View style={styles.container}>
       <View style={styles.bankrollPill}>
         <View style={styles.coinIcon}>
           <View style={styles.coinIconInner} />
@@ -63,14 +61,13 @@ export default function HomeScreen() {
       <View style={styles.hiddenBalance}>
         <Text style={styles.chipAmount}>{formatChips(playerChips)}</Text>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.lg,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, TextInput, Image, Alert, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -8,6 +8,7 @@ import { useGameStore } from '../store/gameStore';
 import { formatChips } from '../utils/format';
 import { loadStats, loadProfile, saveProfile, Stats, ProfileData } from '../utils/storage';
 import { useT } from '../utils/i18n';
+import { getAvatarByName } from '../utils/avatars';
 
 export default function ProfileScreen() {
   const t = useT();
@@ -47,16 +48,10 @@ export default function ProfileScreen() {
   }, [profile]);
 
   return (
-    <ImageBackground source={require('../../assets/splash-icon.png')} style={styles.container} resizeMode="cover">
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.surface} />
-
-      <View style={[styles.header, { paddingTop: (StatusBar.currentHeight || 28) + 4 }]}>
-        <View style={styles.headerBtn} />
-        <Text style={styles.headerTitle}>{t('app.title')}</Text>
-        <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('Settings')}>
-          <MaterialIcons name="settings" size={24} color={COLORS.mochaPeach} />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.settingsFab} onPress={() => navigation.navigate('Settings')}>
+        <MaterialIcons name="settings" size={24} color={COLORS.mochaPeach} />
+      </TouchableOpacity>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Profile Header */}
@@ -65,11 +60,7 @@ export default function ProfileScreen() {
             {profile.avatarUri ? (
               <Image source={{ uri: profile.avatarUri }} style={styles.avatarImage} />
             ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>
-                  {profile.name ? profile.name[0].toUpperCase() : 'A'}
-                </Text>
-</View>
+              <Image source={getAvatarByName(profile.name)} style={styles.avatarImage} />
             )}
             <View style={styles.cameraBadge}>
               <MaterialIcons name="camera-alt" size={14} color={COLORS.surface} />
@@ -163,14 +154,13 @@ export default function ProfileScreen() {
         </ScrollView>
 
 
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
   },
   header: {
     flexDirection: 'row',
@@ -408,6 +398,16 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.bodySm,
     color: COLORS.onSurfaceVariant,
     marginTop: 2,
+  },
+  settingsFab: {
+    position: 'absolute',
+    top: (StatusBar.currentHeight || 28) + 4,
+    right: SPACING.md,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
   bottomNav: {
     flexDirection: 'row',

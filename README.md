@@ -104,6 +104,7 @@ src/
 
 ## Tech Stack
 
-React Native / Expo SDK 54, TypeScript, Zustand, AsyncStorage,
-React Navigation, expo-av, expo-font, expo-image-picker,
-expo-linear-gradient, @expo/vector-icons.
+React Native 0.81 · Expo SDK 54 · TypeScript · Zustand · AsyncStorage
+React Navigation · expo-av · expo-font · expo-image-picker
+expo-linear-gradient · @expo/vector-icons · @expo-google-fonts/montserrat
+react-native-safe-area-context · react-native-screens

@@ -32,6 +32,8 @@
 - Dealer badge, Chip MR logo, Info label (hand/blinds)
 - Splash background on all screens
 - Haptic feedback
+- Custom avatars (7 pixel art cat avatars) for player/bots
+- Background music (BGM) via expo-audio, plays only during gameplay
 
 ## Key Files
 - `src/game/types.ts` — Card types, BLIND_LEVELS, BotDifficulty, etc.
@@ -53,6 +55,7 @@
 - `src/utils/storage.ts` — AsyncStorage persistence (chips, settings, stats, profile)
 - `src/utils/i18n.ts` — useT() hook + t() utility
 - `src/utils/soundManager.ts` — Sound effects via expo-audio (was expo-av)
+- `src/utils/avatars.ts` — 7 custom avatars for player/bots
 - `src/utils/haptics.ts` — Haptic feedback
 - `src/utils/format.ts` — Chip formatting
 

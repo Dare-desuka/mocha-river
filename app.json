@@ -5,11 +5,6 @@
     "version": "3.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#0D0D0D"
-    },
     "userInterfaceStyle": "dark",
     "newArchEnabled": false,
     "ios": {
@@ -24,7 +19,14 @@
       "expo-font",
       "expo-audio",
       "expo-asset",
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0D0D0D",
+          "image": "./assets/icon.png",
+          "imageWidth": 200
+        }
+      ]
     ],
     "extra": {
       "eas": {
